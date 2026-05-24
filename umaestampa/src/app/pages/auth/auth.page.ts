@@ -3,11 +3,8 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import {
-  IonBackButton,
   IonButton,
-  IonButtons,
   IonContent,
-  IonHeader,
   IonIcon,
   IonInput,
   IonItem,
@@ -15,13 +12,13 @@ import {
   IonSegment,
   IonSegmentButton,
   IonSpinner,
-  IonTitle,
-  IonToolbar,
   ToastController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
+  arrowBackOutline,
   brushOutline,
+  colorPaletteOutline,
   cubeOutline,
   eyeOffOutline,
   eyeOutline,
@@ -40,11 +37,8 @@ import {
     CommonModule,
     FormsModule,
     RouterLink,
-    IonBackButton,
     IonButton,
-    IonButtons,
     IonContent,
-    IonHeader,
     IonIcon,
     IonInput,
     IonItem,
@@ -52,8 +46,6 @@ import {
     IonSegment,
     IonSegmentButton,
     IonSpinner,
-    IonTitle,
-    IonToolbar,
   ],
 })
 export class AuthPage {
@@ -72,7 +64,9 @@ export class AuthPage {
 
   constructor() {
     addIcons({
+      arrowBackOutline,
       brushOutline,
+      colorPaletteOutline,
       cubeOutline,
       eyeOffOutline,
       eyeOutline,

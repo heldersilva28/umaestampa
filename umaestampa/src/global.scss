@@ -1,5 +1,49 @@
 @use 'tailwindcss';
 
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-brand-accent: var(--brand-accent);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
 /*
  * App Global CSS
  * ----------------------------------------------------------------------------
@@ -40,9 +84,246 @@
 
 html,
 body {
-  background: #f9fafb;
+  background: var(--page-background);
+  color: var(--foreground);
+  font-size: var(--font-size);
 }
 
 ion-content {
-  --background: #f9fafb;
+  --background: var(--page-background);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  border-color: var(--border);
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  letter-spacing: 0;
+}
+
+button,
+input,
+ion-button,
+ion-input,
+ion-textarea {
+  font-size: var(--text-base);
+}
+
+.shop-header {
+  --background: #ffffff;
+  --border-width: 0 0 1px 0;
+  --border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(3, 2, 19, 0.08);
+}
+
+.shop-header-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 12px 14px 14px;
+}
+
+.brand-lockup {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-mark {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  place-items: center;
+  color: var(--brand-accent);
+}
+
+.brand-mark ion-icon {
+  width: 36px;
+  height: 36px;
+}
+
+.brand-title {
+  margin: 0;
+  overflow: hidden;
+  color: #111827;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.brand-subtitle {
+  margin: 4px 0 0;
+  overflow: hidden;
+  color: #344054;
+  font-size: 18px;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-icon-button {
+  --border-radius: 10px;
+  --box-shadow: none;
+  --padding-start: 0;
+  --padding-end: 0;
+  width: 52px;
+  height: 52px;
+  margin: 0;
+}
+
+.nav-icon-button.light {
+  --background: #ffffff;
+  --color: var(--primary);
+  --border-color: var(--border);
+  --border-style: solid;
+  --border-width: 1px;
+}
+
+.nav-icon-button.dark {
+  --background: var(--primary);
+  --color: #ffffff;
+}
+
+.nav-icon-button ion-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.cart-count-badge {
+  position: absolute;
+  top: -8px;
+  right: -6px;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 28px;
+  text-align: center;
+}
+
+.page-shell {
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding: 24px 12px 36px;
+}
+
+.screen-title {
+  margin: 0 0 44px;
+  color: #050505;
+  font-size: clamp(2.35rem, 8vw, 3.45rem);
+  font-weight: 800;
+  line-height: 1.08;
+}
+
+.surface-card {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--card);
+}
+
+.primary-action {
+  --background: var(--primary);
+  --background-hover: var(--primary);
+  --background-activated: var(--primary);
+  --color: var(--primary-foreground);
+  --border-radius: 12px;
+  min-height: 56px;
+  font-weight: 700;
+}
+
+.secondary-action {
+  --background: #ffffff;
+  --background-hover: #ffffff;
+  --background-activated: #f3f3f5;
+  --border-color: var(--border);
+  --border-style: solid;
+  --border-width: 1px;
+  --color: var(--primary);
+  --border-radius: 12px;
+  min-height: 50px;
+  font-weight: 700;
+}
+
+.price-accent {
+  color: var(--brand-accent);
+}
+
+.muted-copy {
+  color: var(--muted-foreground);
+}
+
+.form-field {
+  --background: var(--input-background);
+  --border-radius: 10px;
+  --min-height: 52px;
+  color: var(--foreground);
+}
+
+.form-field ion-input,
+.form-field ion-textarea {
+  --placeholder-color: #6f7282;
+  --placeholder-opacity: 1;
+}
+
+@media (max-width: 430px) {
+  .shop-header-inner {
+    gap: 8px;
+    padding: 12px 10px;
+  }
+
+  .brand-lockup {
+    gap: 8px;
+  }
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+  }
+
+  .brand-mark ion-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .brand-title {
+    font-size: 24px;
+  }
+
+  .brand-subtitle {
+    font-size: 15px;
+  }
+
+  .nav-icon-button {
+    width: 48px;
+    height: 48px;
+  }
+
+  .cart-count-badge {
+    top: -7px;
+    right: -5px;
+    min-width: 26px;
+    height: 26px;
+    font-size: 16px;
+    line-height: 26px;
+  }
 }

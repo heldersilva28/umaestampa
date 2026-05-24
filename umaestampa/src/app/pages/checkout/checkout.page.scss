@@ -1,5 +1,267 @@
 ion-toolbar {
   --background: #ffffff;
-  --border-width: 0 0 1px 0;
-  --border-color: rgba(0, 0, 0, 0.08);
+}
+
+.checkout-shell {
+  padding-top: 0;
+}
+
+.checkout-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  margin: 6px 0 52px 18px;
+  border: 0;
+  background: transparent;
+  color: #111111;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.checkout-back ion-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.checkout-section {
+  margin-bottom: 34px;
+  padding: 32px 34px;
+}
+
+.checkout-section h2,
+.checkout-summary-card h2 {
+  margin: 0;
+  color: #111111;
+  font-size: 1.45rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.section-copy {
+  margin: 10px 0 32px;
+  color: #717182;
+  font-size: 1.45rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.field-stack {
+  display: grid;
+  gap: 20px;
+}
+
+.field-stack label {
+  display: grid;
+  gap: 2px;
+  color: #111111;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.field-stack label > span {
+  padding-left: 1px;
+}
+
+.form-field {
+  margin-top: -2px;
+  overflow: hidden;
+}
+
+.textarea-field {
+  --min-height: 78px;
+}
+
+.payment-options {
+  display: grid;
+  gap: 18px;
+}
+
+.payment-option {
+  --background: #ffffff;
+  --border-color: var(--border);
+  --border-radius: 12px;
+  --border-style: solid;
+  --border-width: 1px;
+  --inner-border-width: 0;
+  --min-height: 124px;
+  --padding-start: 22px;
+  --padding-end: 18px;
+  --inner-padding-end: 0;
+  margin: 0;
+}
+
+.payment-option ion-radio {
+  --color: #f3f3f5;
+  --color-checked: var(--primary);
+  margin-right: 18px;
+}
+
+.payment-option ion-icon {
+  width: 28px;
+  height: 28px;
+  margin-right: 18px;
+  color: #667085;
+}
+
+.payment-option ion-label {
+  display: grid;
+  gap: 2px;
+  white-space: normal;
+}
+
+.payment-option strong {
+  color: #111111;
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.payment-option span {
+  color: #667085;
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.confirm-order-button {
+  margin: 32px 0 42px;
+}
+
+.checkout-summary-card {
+  padding: 34px;
+}
+
+.checkout-summary-card h2 {
+  margin-bottom: 34px;
+}
+
+.empty-summary {
+  padding-bottom: 24px;
+}
+
+.checkout-summary-item {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 18px;
+  padding: 0 0 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.checkout-summary-item img {
+  width: 90px;
+  height: 90px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.checkout-summary-item h3 {
+  margin: 4px 0 2px;
+  color: #111111;
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.checkout-summary-item p {
+  margin: 0;
+  color: #475467;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.checkout-summary-item strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.checkout-summary-totals {
+  display: grid;
+  gap: 14px;
+  padding-top: 12px;
+}
+
+.checkout-summary-totals > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  color: #475467;
+  font-size: 1.15rem;
+}
+
+.checkout-summary-totals strong {
+  color: #111111;
+  font-weight: 800;
+}
+
+.checkout-summary-totals .success-text {
+  color: var(--success);
+}
+
+.total-line {
+  margin-top: 4px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  color: #111111 !important;
+  font-size: 1.55rem !important;
+  font-weight: 800;
+}
+
+.total-line strong {
+  font-size: 1.6rem;
+}
+
+.confirmation-shell {
+  max-width: 420px;
+}
+
+.confirmation-icon {
+  display: grid;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 24px;
+  place-items: center;
+  border-radius: 999px;
+  background: #f0fdf4;
+  color: var(--success);
+}
+
+.confirmation-icon ion-icon {
+  width: 66px;
+  height: 66px;
+}
+
+.confirmation-shell h1 {
+  margin: 0 0 12px;
+  color: #111111;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.confirmation-order {
+  margin: 4px 0 24px;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+@media (max-width: 430px) {
+  .checkout-back {
+    margin-left: 12px;
+    margin-bottom: 44px;
+  }
+
+  .checkout-section,
+  .checkout-summary-card {
+    padding: 28px 34px;
+  }
+
+  .section-copy {
+    font-size: 1.25rem;
+  }
+
+  .payment-option {
+    --padding-start: 18px;
+  }
 }

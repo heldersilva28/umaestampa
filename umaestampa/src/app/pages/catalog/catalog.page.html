@@ -1,30 +1,24 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar>
-    <div class="flex items-center gap-3 px-4 py-2">
-      <div class="flex min-w-0 flex-1 items-center gap-2">
-        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#7c3aed]">
-          <span class="text-sm font-bold text-white">UE</span>
+  <ion-toolbar class="shop-header">
+    <div class="shop-header-inner">
+      <div class="brand-lockup">
+        <div class="brand-mark">
+          <ion-icon name="color-palette-outline"></ion-icon>
         </div>
         <div class="min-w-0">
-          <p class="m-0 truncate text-base font-bold leading-tight text-gray-900">UmaEstampa</p>
-          <p class="m-0 truncate text-xs leading-tight text-gray-500">Personalize os seus artigos</p>
+          <p class="brand-title">UmaEstampa</p>
+          <p class="brand-subtitle">Personalize os seus artigos</p>
         </div>
       </div>
 
       <div class="relative shrink-0">
-        <ion-button fill="clear" routerLink="/cart" aria-label="Abrir carrinho" class="text-gray-700">
+        <ion-button fill="solid" routerLink="/cart" aria-label="Abrir carrinho" class="nav-icon-button light">
           <ion-icon name="cart-outline" slot="icon-only"></ion-icon>
         </ion-button>
-        <ion-badge
-          *ngIf="cartCount() > 0"
-          class="absolute -right-1 -top-1 min-w-5 text-center text-xs"
-          style="--background: #7c3aed;"
-        >
-          {{ cartCount() }}
-        </ion-badge>
+        <ion-badge *ngIf="cartCount() > 0" class="cart-count-badge">{{ cartCount() }}</ion-badge>
       </div>
 
-      <ion-button fill="clear" routerLink="/auth" aria-label="Abrir conta" class="shrink-0 text-gray-700">
+      <ion-button fill="solid" routerLink="/auth" aria-label="Abrir conta" class="nav-icon-button dark">
         <ion-icon name="person-outline" slot="icon-only"></ion-icon>
       </ion-button>
     </div>
@@ -34,8 +28,8 @@
 <ion-content>
   <div class="mx-auto max-w-5xl px-4 pb-8 pt-6">
     <div class="mb-6 text-center">
-      <h1 class="mb-1 text-2xl font-bold text-gray-900">Escolha o Seu Produto</h1>
-      <p class="mx-auto max-w-md text-sm text-gray-500">
+      <h1 class="mb-1 text-2xl font-bold text-foreground">Escolha o Seu Produto</h1>
+      <p class="mx-auto max-w-md text-sm text-muted-foreground">
         Personalize qualquer artigo com as suas fotos favoritas.
       </p>
     </div>
@@ -44,12 +38,12 @@
       <ion-card
         *ngFor="let product of products"
         class="m-0 cursor-pointer overflow-hidden rounded-2xl shadow-sm"
-        style="--background: #fff;"
+        style="--background: var(--card);"
         tabindex="0"
         (click)="goToProduct(product)"
         (keyup.enter)="goToProduct(product)"
       >
-        <div class="aspect-square w-full bg-gray-100">
+        <div class="aspect-square w-full bg-input-background">
           <img
             [src]="product.image"
             [alt]="product.name"
@@ -59,18 +53,18 @@
         </div>
 
         <ion-card-content class="p-3">
-          <p class="mb-1 text-xs text-gray-400">{{ product.category }}</p>
-          <h2 class="mb-1 text-sm font-semibold leading-tight text-gray-900">
+          <p class="mb-1 text-xs text-muted-foreground">{{ product.category }}</p>
+          <h2 class="mb-1 text-sm font-semibold leading-tight text-foreground">
             {{ product.name }}
           </h2>
-          <p class="mb-2 text-base font-bold text-[#7c3aed]">
+          <p class="mb-2 text-base font-bold text-brand-accent">
             €{{ product.price.toFixed(2) }}
           </p>
 
           <ion-button
             expand="block"
             size="small"
-            style="--background: #7c3aed; --border-radius: 8px;"
+            class="primary-action"
             (click)="goToProduct(product); $event.stopPropagation()"
           >
             <ion-icon name="brush-outline" slot="start"></ion-icon>

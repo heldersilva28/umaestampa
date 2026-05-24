@@ -12,7 +12,7 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { brushOutline, cartOutline, personOutline } from 'ionicons/icons';
+import { brushOutline, cartOutline, colorPaletteOutline, personOutline } from 'ionicons/icons';
 import { CartService } from '../../services/cart.service';
 import { Product, ProductsService } from '../../services/products.service';
 
@@ -43,7 +43,7 @@ export class CatalogPage {
   readonly cartCount = this.cartService.count;
 
   constructor() {
-    addIcons({ brushOutline, cartOutline, personOutline });
+    addIcons({ brushOutline, cartOutline, colorPaletteOutline, personOutline });
   }
 
   goToProduct(product: Product): void {

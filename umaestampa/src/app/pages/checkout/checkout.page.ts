@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
-  IonBackButton,
+  IonBadge,
   IonButton,
-  IonButtons,
   IonContent,
   IonHeader,
   IonIcon,
@@ -16,12 +15,20 @@ import {
   IonRadioGroup,
   IonSpinner,
   IonTextarea,
-  IonTitle,
   IonToolbar,
   ToastController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { businessOutline, cardOutline, checkmarkCircle, phonePortraitOutline } from 'ionicons/icons';
+import {
+  arrowBackOutline,
+  businessOutline,
+  cardOutline,
+  cartOutline,
+  checkmarkCircle,
+  colorPaletteOutline,
+  personOutline,
+  phonePortraitOutline,
+} from 'ionicons/icons';
 import { CartService } from '../../services/cart.service';
 
 @Component({
@@ -32,9 +39,9 @@ import { CartService } from '../../services/cart.service';
   imports: [
     CommonModule,
     FormsModule,
-    IonBackButton,
+    RouterLink,
+    IonBadge,
     IonButton,
-    IonButtons,
     IonContent,
     IonHeader,
     IonIcon,
@@ -45,7 +52,6 @@ import { CartService } from '../../services/cart.service';
     IonRadioGroup,
     IonSpinner,
     IonTextarea,
-    IonTitle,
     IonToolbar,
   ],
 })
@@ -55,8 +61,9 @@ export class CheckoutPage {
   private readonly toastCtrl = inject(ToastController);
 
   readonly items = this.cartService.items;
+  readonly cartCount = this.cartService.count;
   readonly subtotal = this.cartService.subtotal;
-  readonly shipping = computed(() => (this.subtotal() > 50 ? 0 : 4.99));
+  readonly shipping = computed(() => 0);
   readonly total = computed(() => (this.items().length === 0 ? 0 : this.subtotal() + this.shipping()));
 
   orderPlaced = false;
@@ -75,7 +82,16 @@ export class CheckoutPage {
   };
 
   constructor() {
-    addIcons({ businessOutline, cardOutline, checkmarkCircle, phonePortraitOutline });
+    addIcons({
+      arrowBackOutline,
+      businessOutline,
+      cardOutline,
+      cartOutline,
+      checkmarkCircle,
+      colorPaletteOutline,
+      personOutline,
+      phonePortraitOutline,
+    });
   }
 
   async placeOrder(): Promise<void> {

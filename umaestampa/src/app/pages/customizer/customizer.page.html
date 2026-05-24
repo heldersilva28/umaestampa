@@ -11,7 +11,7 @@
   <div class="mx-auto max-w-3xl pb-10">
     <div
       #previewArea
-      class="relative mx-4 mt-4 aspect-square touch-none select-none overflow-hidden rounded-2xl bg-gray-100"
+      class="relative mx-4 mt-4 aspect-square touch-none select-none overflow-hidden rounded-2xl bg-input-background"
       (pointerdown)="onPointerDown($event)"
       (pointermove)="onPointerMove($event)"
       (pointerup)="onPointerUp($event)"
@@ -46,7 +46,7 @@
     <div class="px-4">
       <div class="mb-4 mt-5 flex items-center justify-between gap-4">
         <h1 class="m-0 min-w-0 text-xl font-bold text-gray-900">{{ selectedProduct.name }}</h1>
-        <span class="shrink-0 text-xl font-bold text-[#7c3aed]">€{{ selectedProduct.price.toFixed(2) }}</span>
+        <span class="shrink-0 text-xl font-bold text-brand-accent">€{{ selectedProduct.price.toFixed(2) }}</span>
       </div>
 
       <input
@@ -60,7 +60,7 @@
       <ion-button
         expand="block"
         fill="outline"
-        style="--color: #7c3aed; --border-color: #7c3aed; --border-radius: 12px;"
+        style="--color: var(--primary); --border-color: var(--border); --border-radius: 12px;"
         class="mb-5"
         (click)="fileInput.click()"
       >
@@ -77,7 +77,7 @@
             [min]="20"
             [max]="200"
             [(ngModel)]="imageScale"
-            style="--bar-background: #e5e7eb; --bar-background-active: #7c3aed; --knob-background: #7c3aed;"
+            style="--bar-background: var(--muted); --bar-background-active: var(--brand-accent); --knob-background: var(--brand-accent);"
           >
             <ion-icon name="remove" slot="start" class="text-gray-400"></ion-icon>
             <ion-icon name="add" slot="end" class="text-gray-400"></ion-icon>
@@ -92,7 +92,7 @@
             [min]="-180"
             [max]="180"
             [(ngModel)]="imageRotation"
-            style="--bar-background: #e5e7eb; --bar-background-active: #7c3aed; --knob-background: #7c3aed;"
+            style="--bar-background: var(--muted); --bar-background-active: var(--brand-accent); --knob-background: var(--brand-accent);"
           >
             <ion-icon name="remove" slot="start" class="text-gray-400"></ion-icon>
             <ion-icon name="add" slot="end" class="text-gray-400"></ion-icon>
@@ -108,7 +108,7 @@
       <ion-button
         expand="block"
         class="mt-6"
-        style="--background: #7c3aed; --border-radius: 12px;"
+        class="primary-action"
         [disabled]="!uploadedImage"
         (click)="addToCart()"
       >

@@ -1,126 +1,114 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/catalog" text="Continuar"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Carrinho</ion-title>
+  <ion-toolbar class="shop-header">
+    <div class="shop-header-inner">
+      <div class="brand-lockup">
+        <div class="brand-mark">
+          <ion-icon name="color-palette-outline"></ion-icon>
+        </div>
+        <div class="min-w-0">
+          <p class="brand-title">UmaEstampa</p>
+          <p class="brand-subtitle">Personalize os seus artigos</p>
+        </div>
+      </div>
+
+      <div class="relative shrink-0">
+        <ion-button fill="solid" routerLink="/cart" aria-label="Abrir carrinho" class="nav-icon-button light">
+          <ion-icon name="cart-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+        <ion-badge *ngIf="cartCount() > 0" class="cart-count-badge">{{ cartCount() }}</ion-badge>
+      </div>
+
+      <ion-button fill="solid" routerLink="/auth" aria-label="Abrir conta" class="nav-icon-button dark">
+        <ion-icon name="person-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div class="mx-auto max-w-3xl px-4 py-6">
-    <div *ngIf="items().length === 0" class="flex flex-col items-center justify-center py-20 text-center">
+  <div class="page-shell cart-shell">
+    <h1 class="screen-title">Carrinho de Compras</h1>
+
+    <div *ngIf="items().length === 0" class="surface-card flex flex-col items-center justify-center px-6 py-20 text-center">
       <div class="mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-gray-100">
         <ion-icon name="bag-outline" class="text-5xl text-gray-300"></ion-icon>
       </div>
       <h1 class="mb-2 text-2xl font-bold text-gray-900">Carrinho Vazio</h1>
       <p class="mb-6 text-sm text-gray-500">Ainda não adicionou nenhum produto.</p>
-      <ion-button routerLink="/catalog" style="--background: #7c3aed; --border-radius: 12px;">
+      <ion-button routerLink="/catalog" class="primary-action">
         Explorar Produtos
       </ion-button>
     </div>
 
-    <div *ngIf="items().length > 0">
-      <ion-card
-        *ngFor="let item of items(); let i = index"
-        class="m-0 mb-3 rounded-2xl shadow-sm"
-        style="--background: #fff;"
-      >
-        <ion-card-content class="p-4">
-          <div class="flex items-start gap-3">
-            <div class="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gray-100">
-              <img
-                [src]="item.product.image"
-                [alt]="item.product.name"
-                class="absolute inset-0 h-full w-full object-cover opacity-35"
-              />
-              <img
-                [src]="item.imageUrl"
-                alt="Imagem personalizada"
-                class="absolute max-h-[70%] max-w-[70%] object-contain"
-                [style.left.%]="item.imagePosition.x"
-                [style.top.%]="item.imagePosition.y"
-                [style.transform]="
-                  'translate(-50%, -50%) scale(' +
-                  item.imageScale / 100 +
-                  ') rotate(' +
-                  item.imageRotation +
-                  'deg)'
-                "
-              />
+    <div *ngIf="items().length > 0" class="space-y-6">
+      <div *ngFor="let item of items(); let i = index" class="surface-card cart-product-card">
+        <img [src]="item.product.image" [alt]="item.product.name" class="cart-product-image" />
+
+        <div class="cart-product-main">
+          <div class="cart-product-head">
+            <div class="min-w-0">
+              <h2>{{ item.product.name }}</h2>
+              <p>Design personalizado</p>
             </div>
+            <strong class="price-accent">€{{ item.product.price.toFixed(2) }}</strong>
+          </div>
 
-            <div class="min-w-0 flex-1">
-              <p class="m-0 truncate font-semibold text-gray-900">{{ item.product.name }}</p>
-              <p class="m-0 text-base font-bold text-[#7c3aed]">€{{ item.product.price.toFixed(2) }}</p>
+          <div class="cart-product-controls">
+            <ion-button
+              fill="outline"
+              class="quantity-button"
+              [disabled]="item.quantity <= 1"
+              (click)="updateQuantity(i, item.quantity - 1)"
+              aria-label="Diminuir quantidade"
+            >
+              <ion-icon name="remove" slot="icon-only"></ion-icon>
+            </ion-button>
 
-              <div class="mt-2 flex items-center gap-3">
-                <ion-button
-                  fill="outline"
-                  size="small"
-                  style="--border-color: #e5e7eb; --color: #374151; width: 32px; height: 32px;"
-                  [disabled]="item.quantity <= 1"
-                  (click)="updateQuantity(i, item.quantity - 1)"
-                  aria-label="Diminuir quantidade"
-                >
-                  <ion-icon name="remove" slot="icon-only"></ion-icon>
-                </ion-button>
+            <span>{{ item.quantity }}</span>
 
-                <span class="w-5 text-center text-sm font-semibold text-gray-900">{{ item.quantity }}</span>
+            <ion-button
+              fill="outline"
+              class="quantity-button"
+              (click)="updateQuantity(i, item.quantity + 1)"
+              aria-label="Aumentar quantidade"
+            >
+              <ion-icon name="add" slot="icon-only"></ion-icon>
+            </ion-button>
 
-                <ion-button
-                  fill="outline"
-                  size="small"
-                  style="--border-color: #e5e7eb; --color: #374151; width: 32px; height: 32px;"
-                  (click)="updateQuantity(i, item.quantity + 1)"
-                  aria-label="Aumentar quantidade"
-                >
-                  <ion-icon name="add" slot="icon-only"></ion-icon>
-                </ion-button>
-              </div>
-            </div>
-
-            <ion-button fill="clear" color="danger" (click)="removeItem(i)" aria-label="Remover item">
+            <ion-button fill="clear" class="delete-button" (click)="removeItem(i)" aria-label="Remover item">
               <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
             </ion-button>
           </div>
-        </ion-card-content>
-      </ion-card>
+        </div>
+      </div>
 
-      <ion-card class="m-0 mt-4 rounded-2xl shadow-sm" style="--background: #fff;">
-        <ion-card-content class="p-4">
-          <h2 class="mb-3 text-base font-bold text-gray-900">Resumo</h2>
+      <div class="surface-card order-summary-card">
+        <h2>Resumo do Pedido</h2>
 
-          <div class="mb-2 flex justify-between text-sm text-gray-600">
-            <span>Subtotal</span>
-            <span>€{{ subtotal().toFixed(2) }}</span>
-          </div>
-          <div class="mb-3 flex justify-between text-sm text-gray-600">
-            <span>Envio</span>
-            <span class="font-medium" [class.text-green-600]="shipping() === 0">
-              {{ shipping() === 0 ? 'Grátis' : '€' + shipping().toFixed(2) }}
-            </span>
-          </div>
-          <div class="flex justify-between border-t pt-3 text-base font-bold text-gray-900">
-            <span>Total</span>
-            <span>€{{ total().toFixed(2) }}</span>
-          </div>
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <strong>€{{ subtotal().toFixed(2) }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Envio</span>
+          <strong>{{ shipping() === 0 ? 'Grátis' : '€' + shipping().toFixed(2) }}</strong>
+        </div>
+        <p *ngIf="shipping() > 0" class="summary-note">Envio grátis em compras acima de €50</p>
 
-          <p *ngIf="shipping() > 0" class="mt-2 text-xs text-gray-400">
-            Envio grátis em compras acima de €50.
-          </p>
+        <div class="summary-total">
+          <span>Total</span>
+          <strong class="price-accent">€{{ total().toFixed(2) }}</strong>
+        </div>
 
-          <ion-button
-            expand="block"
-            class="mt-4"
-            routerLink="/checkout"
-            style="--background: #7c3aed; --border-radius: 12px;"
-          >
-            Finalizar Encomenda
-            <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
-          </ion-button>
-        </ion-card-content>
-      </ion-card>
+        <ion-button expand="block" routerLink="/checkout" class="primary-action mt-7">
+          Finalizar Encomenda
+          <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+        </ion-button>
+
+        <ion-button expand="block" fill="outline" routerLink="/catalog" class="secondary-action mt-6">
+          Continuar a Comprar
+        </ion-button>
+      </div>
     </div>
   </div>
 </ion-content>
