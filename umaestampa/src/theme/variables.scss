@@ -1,0 +1,30 @@
+:root {
+  --background: #ffffff;
+  --foreground: #030213;
+  --muted: #ececf0;
+  --muted-foreground: #717182;
+  --input-background: #f3f3f5;
+  --border: rgba(0, 0, 0, 0.1);
+  --destructive: #d4183d;
+  --radius: 0.625rem;
+
+  --ion-color-primary: #7c3aed;
+  --ion-color-primary-rgb: 124, 58, 237;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #6d28d9;
+  --ion-color-primary-tint: #8b5cf6;
+
+  --ion-background-color: #f9fafb;
+  --ion-background-color-rgb: 249, 250, 251;
+  --ion-text-color: #111827;
+  --ion-text-color-rgb: 17, 24, 39;
+
+  --ion-toolbar-background: #ffffff;
+  --ion-toolbar-color: #111827;
+  --ion-toolbar-border-color: rgba(0, 0, 0, 0.08);
+
+  --ion-card-background: #ffffff;
+  --ion-item-background: #ffffff;
+  --ion-border-color: rgba(0, 0, 0, 0.1);
+}

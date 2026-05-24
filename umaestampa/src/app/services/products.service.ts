@@ -1,0 +1,72 @@
+import { Injectable } from '@angular/core';
+
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  category: string;
+}
+
+@Injectable({ providedIn: 'root' })
+export class ProductsService {
+  private readonly products: Product[] = [
+    {
+      id: 'phone-case',
+      name: 'Capa de Telemóvel',
+      description: 'Capa protetora personalizada para o seu smartphone',
+      price: 12.99,
+      image: 'https://images.unsplash.com/photo-1520970802623-5ce51ced3006?w=400',
+      category: 'Acessórios',
+    },
+    {
+      id: 't-shirt',
+      name: 'T-Shirt',
+      description: 'T-shirt 100% algodão com a sua foto favorita',
+      price: 19.99,
+      image: 'https://images.unsplash.com/photo-1620799139507-2a76f79a2f4d?w=400',
+      category: 'Vestuário',
+    },
+    {
+      id: 'cap',
+      name: 'Boné',
+      description: 'Boné ajustável com design personalizado',
+      price: 15.99,
+      image: 'https://images.unsplash.com/photo-1691256676359-20e5c6d4bc92?w=400',
+      category: 'Acessórios',
+    },
+    {
+      id: 'mug',
+      name: 'Caneca',
+      description: 'Caneca de cerâmica personalizada',
+      price: 9.99,
+      image: 'https://images.unsplash.com/photo-1650959858546-d09833d5317b?w=400',
+      category: 'Casa',
+    },
+    {
+      id: 'tote-bag',
+      name: 'Tote Bag',
+      description: 'Saco de lona resistente e ecológico',
+      price: 14.99,
+      image: 'https://images.unsplash.com/photo-1542957057-debadce4ce81?w=400',
+      category: 'Acessórios',
+    },
+    {
+      id: 'cushion',
+      name: 'Almofada',
+      description: 'Almofada decorativa com impressão de alta qualidade',
+      price: 16.99,
+      image: 'https://images.unsplash.com/photo-1691256676366-370303d55b61?w=400',
+      category: 'Casa',
+    },
+  ];
+
+  getAll(): Product[] {
+    return this.products;
+  }
+
+  getById(id: string): Product | undefined {
+    return this.products.find((product) => product.id === id);
+  }
+}

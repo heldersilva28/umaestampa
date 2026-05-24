@@ -1,0 +1,120 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/catalog" text="Voltar"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Personalizar</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="product as selectedProduct">
+  <div class="mx-auto max-w-3xl pb-10">
+    <div
+      #previewArea
+      class="relative mx-4 mt-4 aspect-square touch-none select-none overflow-hidden rounded-2xl bg-gray-100"
+      (pointerdown)="onPointerDown($event)"
+      (pointermove)="onPointerMove($event)"
+      (pointerup)="onPointerUp($event)"
+      (pointercancel)="onPointerUp($event)"
+    >
+      <img
+        [src]="selectedProduct.image"
+        [alt]="selectedProduct.name"
+        class="absolute inset-0 h-full w-full object-cover"
+      />
+
+      <img
+        *ngIf="uploadedImage"
+        [src]="uploadedImage"
+        alt="Imagem personalizada"
+        class="absolute max-h-[70%] max-w-[70%] object-contain pointer-events-none"
+        [style.left.%]="imagePosition.x"
+        [style.top.%]="imagePosition.y"
+        [style.transform]="
+          'translate(-50%, -50%) scale(' + imageScale / 100 + ') rotate(' + imageRotation + 'deg)'
+        "
+      />
+
+      <div *ngIf="!uploadedImage" class="absolute inset-0 flex flex-col items-center justify-center">
+        <div class="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-white/80">
+          <ion-icon name="cloud-upload-outline" class="text-3xl text-gray-400"></ion-icon>
+        </div>
+        <p class="m-0 text-sm font-medium text-gray-500">Carregue uma imagem</p>
+      </div>
+    </div>
+
+    <div class="px-4">
+      <div class="mb-4 mt-5 flex items-center justify-between gap-4">
+        <h1 class="m-0 min-w-0 text-xl font-bold text-gray-900">{{ selectedProduct.name }}</h1>
+        <span class="shrink-0 text-xl font-bold text-[#7c3aed]">€{{ selectedProduct.price.toFixed(2) }}</span>
+      </div>
+
+      <input
+        type="file"
+        accept="image/*"
+        #fileInput
+        (change)="onFileSelected($event)"
+        class="hidden"
+      />
+
+      <ion-button
+        expand="block"
+        fill="outline"
+        style="--color: #7c3aed; --border-color: #7c3aed; --border-radius: 12px;"
+        class="mb-5"
+        (click)="fileInput.click()"
+      >
+        <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+        {{ uploadedImage ? 'Trocar Imagem' : 'Carregar Imagem da Galeria' }}
+      </ion-button>
+
+      <div *ngIf="uploadedImage" class="space-y-5">
+        <div>
+          <ion-label class="mb-1 block text-sm font-medium text-gray-700">
+            Tamanho: {{ imageScale }}%
+          </ion-label>
+          <ion-range
+            [min]="20"
+            [max]="200"
+            [(ngModel)]="imageScale"
+            style="--bar-background: #e5e7eb; --bar-background-active: #7c3aed; --knob-background: #7c3aed;"
+          >
+            <ion-icon name="remove" slot="start" class="text-gray-400"></ion-icon>
+            <ion-icon name="add" slot="end" class="text-gray-400"></ion-icon>
+          </ion-range>
+        </div>
+
+        <div>
+          <ion-label class="mb-1 block text-sm font-medium text-gray-700">
+            Rotação: {{ imageRotation }}°
+          </ion-label>
+          <ion-range
+            [min]="-180"
+            [max]="180"
+            [(ngModel)]="imageRotation"
+            style="--bar-background: #e5e7eb; --bar-background-active: #7c3aed; --knob-background: #7c3aed;"
+          >
+            <ion-icon name="remove" slot="start" class="text-gray-400"></ion-icon>
+            <ion-icon name="add" slot="end" class="text-gray-400"></ion-icon>
+          </ion-range>
+        </div>
+
+        <ion-button fill="clear" size="small" class="text-gray-500" (click)="resetAdjustments()">
+          <ion-icon name="refresh-outline" slot="start"></ion-icon>
+          Repor ajustes
+        </ion-button>
+      </div>
+
+      <ion-button
+        expand="block"
+        class="mt-6"
+        style="--background: #7c3aed; --border-radius: 12px;"
+        [disabled]="!uploadedImage"
+        (click)="addToCart()"
+      >
+        <ion-icon name="cart-outline" slot="start"></ion-icon>
+        Adicionar ao Carrinho
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

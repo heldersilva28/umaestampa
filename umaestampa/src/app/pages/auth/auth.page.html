@@ -1,0 +1,119 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/catalog" text="Voltar"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Conta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="mx-auto max-w-sm px-6 pb-10 pt-8">
+    <div class="mb-8 text-center">
+      <div class="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#7c3aed]">
+        <ion-icon name="brush-outline" class="text-3xl text-white"></ion-icon>
+      </div>
+      <h1 class="m-0 text-2xl font-bold text-gray-900">UmaEstampa</h1>
+      <p class="mt-1 text-sm text-gray-500">A sua conta de personalização</p>
+    </div>
+
+    <ion-segment [(ngModel)]="activeTab" class="mb-6" style="--background: #f3f3f5;">
+      <ion-segment-button value="login" style="--color-checked: #7c3aed;">
+        <ion-label>Entrar</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="register" style="--color-checked: #7c3aed;">
+        <ion-label>Registar</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <div *ngIf="activeTab === 'login'" class="space-y-3">
+      <ion-item class="rounded-xl" lines="none" style="--background: #f3f3f5; --border-radius: 12px;">
+        <ion-icon name="mail-outline" slot="start" class="text-gray-400"></ion-icon>
+        <ion-input type="email" placeholder="Email" [(ngModel)]="loginEmail" autocomplete="email"></ion-input>
+      </ion-item>
+
+      <ion-item class="rounded-xl" lines="none" style="--background: #f3f3f5; --border-radius: 12px;">
+        <ion-icon name="lock-closed-outline" slot="start" class="text-gray-400"></ion-icon>
+        <ion-input
+          [type]="showPassword ? 'text' : 'password'"
+          placeholder="Password"
+          [(ngModel)]="loginPassword"
+          autocomplete="current-password"
+        ></ion-input>
+        <ion-button fill="clear" slot="end" (click)="showPassword = !showPassword" aria-label="Mostrar password">
+          <ion-icon
+            [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+            slot="icon-only"
+            class="text-gray-400"
+          ></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <ion-button
+        expand="block"
+        class="mt-4"
+        style="--background: #7c3aed; --border-radius: 12px;"
+        [disabled]="isLoading"
+        (click)="login()"
+      >
+        <ion-spinner *ngIf="isLoading" name="crescent" slot="start"></ion-spinner>
+        {{ isLoading ? 'A entrar...' : 'Entrar' }}
+      </ion-button>
+    </div>
+
+    <div *ngIf="activeTab === 'register'" class="space-y-3">
+      <ion-item class="rounded-xl" lines="none" style="--background: #f3f3f5; --border-radius: 12px;">
+        <ion-icon name="person-outline" slot="start" class="text-gray-400"></ion-icon>
+        <ion-input type="text" placeholder="Nome completo" [(ngModel)]="registerName"></ion-input>
+      </ion-item>
+
+      <ion-item class="rounded-xl" lines="none" style="--background: #f3f3f5; --border-radius: 12px;">
+        <ion-icon name="mail-outline" slot="start" class="text-gray-400"></ion-icon>
+        <ion-input type="email" placeholder="Email" [(ngModel)]="registerEmail" autocomplete="email"></ion-input>
+      </ion-item>
+
+      <ion-item class="rounded-xl" lines="none" style="--background: #f3f3f5; --border-radius: 12px;">
+        <ion-icon name="lock-closed-outline" slot="start" class="text-gray-400"></ion-icon>
+        <ion-input
+          [type]="showPassword ? 'text' : 'password'"
+          placeholder="Password"
+          [(ngModel)]="registerPassword"
+          autocomplete="new-password"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item class="rounded-xl" lines="none" style="--background: #f3f3f5; --border-radius: 12px;">
+        <ion-icon name="shield-checkmark-outline" slot="start" class="text-gray-400"></ion-icon>
+        <ion-input
+          [type]="showPassword ? 'text' : 'password'"
+          placeholder="Confirmar password"
+          [(ngModel)]="registerConfirmPassword"
+          autocomplete="new-password"
+        ></ion-input>
+        <ion-button fill="clear" slot="end" (click)="showPassword = !showPassword" aria-label="Mostrar password">
+          <ion-icon
+            [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+            slot="icon-only"
+            class="text-gray-400"
+          ></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <ion-button
+        expand="block"
+        class="mt-4"
+        style="--background: #7c3aed; --border-radius: 12px;"
+        [disabled]="isLoading"
+        (click)="register()"
+      >
+        <ion-spinner *ngIf="isLoading" name="crescent" slot="start"></ion-spinner>
+        {{ isLoading ? 'A criar conta...' : 'Criar Conta' }}
+      </ion-button>
+    </div>
+
+    <ion-button fill="clear" expand="block" routerLink="/order-history" class="mt-5 text-gray-500">
+      <ion-icon name="cube-outline" slot="start"></ion-icon>
+      Histórico de Encomendas
+    </ion-button>
+  </div>
+</ion-content>
