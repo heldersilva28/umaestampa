@@ -1,3 +1,9 @@
+/**
+ * Global SCSS para a aplicação UmaEstampa
+ * Contém estilos globais, classes reutilizáveis e CSS Custom Properties
+ * Integra Tailwind CSS e define formatações consisten para toda a app
+ */
+
 @use 'tailwindcss';
 
 @custom-variant dark (&:is(.dark *));
@@ -46,25 +52,20 @@
 
 /*
  * App Global CSS
- * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
+ * Estilos aplicados globalmente à aplicação
+ * Importações Ionic Framework CSS para funcionalidade dos componentes
  */
 
-/* Core CSS required for Ionic components to work properly */
+/* Core CSS necessário para componentes Ionic funcionarem corretamente */
 @import "@ionic/angular/css/core.css";
 
-/* Basic CSS for apps built with Ionic */
+/* CSS básico para aplicações Ionic */
 @import "@ionic/angular/css/normalize.css";
 @import "@ionic/angular/css/structure.css";
 @import "@ionic/angular/css/typography.css";
 @import "@ionic/angular/css/display.css";
 
-/* Optional CSS utils that can be commented out */
+/* Utilitários CSS opcionais */
 @import "@ionic/angular/css/padding.css";
 @import "@ionic/angular/css/float-elements.css";
 @import "@ionic/angular/css/text-alignment.css";
@@ -72,16 +73,21 @@
 @import "@ionic/angular/css/flex-utils.css";
 
 /**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
+ * Modo Escuro do Ionic
+ * Para ativar um dos temas, descomente uma das linhas abaixo:
+ * - dark.always.css: tema escuro sempre ativo
+ * - dark.class.css: tema escuro baseado em classe .dark
+ * - dark.system.css: tema escuro baseado nas preferências do sistema
  */
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 /* @import '@ionic/angular/css/palettes/dark.system.css'; */
 
+/**
+ * Estilos de página root
+ * Define cor de fundo e cor de texto globais
+ */
 html,
 body {
   background: var(--page-background);
@@ -89,20 +95,36 @@ body {
   font-size: var(--font-size);
 }
 
+/**
+ * Background do ion-content
+ * Utiliza propriedade CSS custom para consistência
+ */
 ion-content {
   --background: var(--page-background);
 }
 
+/**
+ * Reset CSS global
+ * Garante box-sizing correto em todos os elementos
+ */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
+/**
+ * Cores de border globais
+ * Aplicado a todos os elementos
+ */
 * {
   border-color: var(--border);
 }
 
+/**
+ * Estilos de tipografia
+ * Headings e parágrafos
+ */
 h1,
 h2,
 h3,
@@ -111,6 +133,10 @@ p {
   letter-spacing: 0;
 }
 
+/**
+ * Estilos para componentes de input
+ * Button, input, textarea do Ionic
+ */
 button,
 input,
 ion-button,
@@ -119,6 +145,10 @@ ion-textarea {
   font-size: var(--text-base);
 }
 
+/**
+ * Classe: Shop Header
+ * Cabeçalho da loja com background branco e border inferior
+ */
 .shop-header {
   --background: #ffffff;
   --border-width: 0 0 1px 0;
@@ -126,6 +156,10 @@ ion-textarea {
   box-shadow: 0 2px 8px rgba(3, 2, 19, 0.08);
 }
 
+/**
+ * Classe: Shop Header Inner
+ * Container flexível dentro do header
+ */
 .shop-header-inner {
   display: flex;
   align-items: center;
@@ -133,6 +167,10 @@ ion-textarea {
   padding: 14px 12px 14px 14px;
 }
 
+/**
+ * Classe: Brand Lockup
+ * Contém logo e nome da marca no header
+ */
 .brand-lockup {
   display: flex;
   min-width: 0;
@@ -141,6 +179,10 @@ ion-textarea {
   gap: 10px;
 }
 
+/**
+ * Classe: Brand Mark
+ * Área para logo/marca visual
+ */
 .brand-mark {
   display: grid;
   width: 40px;
@@ -155,6 +197,10 @@ ion-textarea {
   height: 36px;
 }
 
+/**
+ * Classe: Brand Title
+ * Título da marca (UmaEstampa)
+ */
 .brand-title {
   margin: 0;
   overflow: hidden;
@@ -166,6 +212,10 @@ ion-textarea {
   white-space: nowrap;
 }
 
+/**
+ * Classe: Brand Subtitle
+ * Subtítulo/descrição da marca
+ */
 .brand-subtitle {
   margin: 4px 0 0;
   overflow: hidden;
@@ -176,6 +226,10 @@ ion-textarea {
   white-space: nowrap;
 }
 
+/**
+ * Classe: Nav Icon Button
+ * Botão com ícone na navegação (carrinho, perfil, etc)
+ */
 .nav-icon-button {
   --border-radius: 10px;
   --box-shadow: none;
@@ -186,6 +240,10 @@ ion-textarea {
   margin: 0;
 }
 
+/**
+ * Classe: Nav Icon Button - Variante Light
+ * Botão com fundo branco e borda
+ */
 .nav-icon-button.light {
   --background: #ffffff;
   --color: var(--primary);
@@ -194,6 +252,10 @@ ion-textarea {
   --border-width: 1px;
 }
 
+/**
+ * Classe: Nav Icon Button - Variante Dark
+ * Botão com fundo colorido
+ */
 .nav-icon-button.dark {
   --background: var(--primary);
   --color: #ffffff;
@@ -204,6 +266,10 @@ ion-textarea {
   height: 24px;
 }
 
+/**
+ * Classe: Cart Count Badge
+ * Badge para exibir número de itens no carrinho
+ */
 .cart-count-badge {
   position: absolute;
   top: -8px;
@@ -220,12 +286,22 @@ ion-textarea {
   text-align: center;
 }
 
+/**
+ * Classe: Page Shell
+ * Container principal para conteúdo das páginas
+ * Responsivo com max-width e padding
+ */
 .page-shell {
   width: min(100%, 760px);
   margin: 0 auto;
   padding: 24px 12px 36px;
 }
 
+/**
+ * Classe: Screen Title
+ * Título principal da página
+ * Tamanho responsivo com clamp
+ */
 .screen-title {
   margin: 0 0 44px;
   color: #050505;
@@ -234,6 +310,10 @@ ion-textarea {
   line-height: 1.08;
 }
 
+/**
+ * Classe: Surface Card
+ * Card/painel com borda e fundo
+ */
 .surface-card {
   overflow: hidden;
   border: 1px solid var(--border);
@@ -241,6 +321,11 @@ ion-textarea {
   background: var(--card);
 }
 
+/**
+ * Classe: Primary Action
+ * Botão de ação principal (azul escuro)
+ * Usado para confirmar, comprar, etc
+ */
 .primary-action {
   --background: var(--primary);
   --background-hover: var(--primary);
@@ -251,6 +336,11 @@ ion-textarea {
   font-weight: 700;
 }
 
+/**
+ * Classe: Secondary Action
+ * Botão de ação secundária (contorno)
+ * Usado para ações menos importantes
+ */
 .secondary-action {
   --background: #ffffff;
   --background-hover: #ffffff;
@@ -264,14 +354,26 @@ ion-textarea {
   font-weight: 700;
 }
 
+/**
+ * Classe: Price Accent
+ * Highlight para preços (roxo)
+ */
 .price-accent {
   color: var(--brand-accent);
 }
 
+/**
+ * Classe: Muted Copy
+ * Texto secundário ou desativado
+ */
 .muted-copy {
   color: var(--muted-foreground);
 }
 
+/**
+ * Classe: Form Field
+ * Container para inputs de formulário
+ */
 .form-field {
   --background: var(--input-background);
   --border-radius: 10px;
@@ -285,6 +387,10 @@ ion-textarea {
   --placeholder-opacity: 1;
 }
 
+/**
+ * Media Query: Devices pequenos (< 430px)
+ * Ajusta espaçamentos e tamanhos para melhor uso em ecrãs pequenos
+ */
 @media (max-width: 430px) {
   .shop-header-inner {
     gap: 8px;
@@ -326,4 +432,28 @@ ion-textarea {
     font-size: 16px;
     line-height: 26px;
   }
+}
+
+/**
+ * Classe: Auth Popover
+ * Estilos para o popover de autenticação
+ * Dropdown abaixo do botão de perfil
+ */
+.auth-popover {
+  --width: 280px;
+  --max-width: 280px;
+  --border-radius: 12px;
+  --box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  --background: var(--card);
+}
+
+.auth-popover .popover-content {
+  border-radius: 12px;
+}
+
+.auth-popover ion-content {
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 0;
+  --padding-end: 0;
 }

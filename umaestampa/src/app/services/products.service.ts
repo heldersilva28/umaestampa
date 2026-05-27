@@ -1,5 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
+/**
+ * Interface para representar um produto na aplicação
+ * @interface Product
+ * @property {string} id - Identificador único do produto
+ * @property {string} name - Nome do produto
+ * @property {string} description - Descrição detalhada do produto
+ * @property {number} price - Preço do produto em euros
+ * @property {string} image - URL da imagem do produto
+ * @property {string} category - Categoria do produto (ex: Acessórios, Vestuário, Casa)
+ */
 export interface Product {
   id: string;
   name: string;
@@ -9,64 +21,56 @@ export interface Product {
   category: string;
 }
 
+/**
+ * Serviço para gerenciar produtos da aplicação
+ * Responsável por carregar produtos do ficheiro JSON e fornecer métodos de acesso aos dados
+ * @class ProductsService
+ */
 @Injectable({ providedIn: 'root' })
 export class ProductsService {
-  private readonly products: Product[] = [
-    {
-      id: 'phone-case',
-      name: 'Capa de Telemóvel',
-      description: 'Capa protetora personalizada para o seu smartphone',
-      price: 12.99,
-      image: 'https://images.unsplash.com/photo-1520970802623-5ce51ced3006?w=400',
-      category: 'Acessórios',
-    },
-    {
-      id: 't-shirt',
-      name: 'T-Shirt',
-      description: 'T-shirt 100% algodão com a sua foto favorita',
-      price: 19.99,
-      image: 'https://images.unsplash.com/photo-1620799139507-2a76f79a2f4d?w=400',
-      category: 'Vestuário',
-    },
-    {
-      id: 'cap',
-      name: 'Boné',
-      description: 'Boné ajustável com design personalizado',
-      price: 15.99,
-      image: 'https://images.unsplash.com/photo-1691256676359-20e5c6d4bc92?w=400',
-      category: 'Acessórios',
-    },
-    {
-      id: 'mug',
-      name: 'Caneca',
-      description: 'Caneca de cerâmica personalizada',
-      price: 9.99,
-      image: 'https://images.unsplash.com/photo-1650959858546-d09833d5317b?w=400',
-      category: 'Casa',
-    },
-    {
-      id: 'tote-bag',
-      name: 'Tote Bag',
-      description: 'Saco de lona resistente e ecológico',
-      price: 14.99,
-      image: 'https://images.unsplash.com/photo-1542957057-debadce4ce81?w=400',
-      category: 'Acessórios',
-    },
-    {
-      id: 'cushion',
-      name: 'Almofada',
-      description: 'Almofada decorativa com impressão de alta qualidade',
-      price: 16.99,
-      image: 'https://images.unsplash.com/photo-1691256676366-370303d55b61?w=400',
-      category: 'Casa',
-    },
-  ];
+  // Signal para armazenar a lista de produtos reativa
+  readonly products$ = signal<Product[]>([]);
 
-  getAll(): Product[] {
-    return this.products;
+  /**
+   * Construtor do serviço ProductsService
+   * @constructor
+   * @param {HttpClient} http - Cliente HTTP para fazer requisições
+   */
+  constructor(private http: HttpClient) {
+    this.loadProducts();
   }
 
+  /**
+   * Carrega produtos do ficheiro JSON (assets/products.json)
+   * Utiliza HttpClient para fazer uma requisição GET ao ficheiro de configuração
+   * @private
+   * @async
+   * @returns {Promise<void>}
+   */
+  private async loadProducts(): Promise<void> {
+    try {
+      const data = await firstValueFrom(this.http.get<Product[]>('/assets/products.json'));
+      this.products$.set(data);
+    } catch (error) {
+      console.error('Erro ao carregar produtos do JSON:', error);
+      this.products$.set([]);
+    }
+  }
+
+  /**
+   * Obtém todos os produtos
+   * @returns {Product[]} Array com todos os produtos carregados
+   */
+  getAll(): Product[] {
+    return this.products$();
+  }
+
+  /**
+   * Procura um produto pelo ID
+   * @param {string} id - ID do produto a procurar
+   * @returns {Product | undefined} Produto encontrado ou undefined se não existir
+   */
   getById(id: string): Product | undefined {
-    return this.products.find((product) => product.id === id);
+    return this.products$().find((product) => product.id === id);
   }
 }

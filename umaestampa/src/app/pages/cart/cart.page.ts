@@ -22,6 +22,14 @@ import {
 } from 'ionicons/icons';
 import { CartService } from '../../services/cart.service';
 
+/**
+ * Página do Carrinho de Compras
+ * Exibe todos os itens adicionados ao carrinho
+ * Permite modificar quantidades, remover itens e prosseguir para checkout
+ * @component
+ * @example
+ * <app-cart></app-cart>
+ */
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.page.html',
@@ -41,12 +49,25 @@ import { CartService } from '../../services/cart.service';
 export class CartPage {
   private readonly cartService = inject(CartService);
 
+  // Lista reativa de itens do carrinho
   readonly items = this.cartService.items;
+
+  // Quantidade total de itens
   readonly cartCount = this.cartService.count;
+
+  // Subtotal (preço sem taxas de envio)
   readonly subtotal = this.cartService.subtotal;
+
+  // Taxa de envio: gratuito se subtotal > 50€, caso contrário 4.99€
   readonly shipping = computed(() => (this.subtotal() > 50 ? 0 : 4.99));
+
+  // Total a pagar: subtotal + taxa de envio
   readonly total = computed(() => this.subtotal() + this.shipping());
 
+  /**
+   * Construtor - Registra os ícones a utilizar no template
+   * @constructor
+   */
   constructor() {
     addIcons({
       add,
@@ -60,11 +81,23 @@ export class CartPage {
     });
   }
 
-  updateQuantity(index: number, quantity: number): void {
-    this.cartService.updateQuantity(index, quantity);
+  /**
+   * Atualiza a quantidade de um item no carrinho
+   * @param {number} index - Índice do item no array
+   * @param {number} quantity - Nova quantidade
+   * @returns {Promise<void>}
+   */
+  async updateQuantity(index: number, quantity: number): Promise<void> {
+    await this.cartService.updateQuantity(index, quantity);
   }
 
-  removeItem(index: number): void {
-    this.cartService.removeItem(index);
+  /**
+   * Remove um item do carrinho
+   * @async
+   * @param {number} index - Índice do item a remover
+   * @returns {Promise<void>}
+   */
+  async removeItem(index: number): Promise<void> {
+    await this.cartService.removeItem(index);
   }
 }

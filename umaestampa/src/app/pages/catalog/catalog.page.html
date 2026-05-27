@@ -18,14 +18,20 @@
         <ion-badge *ngIf="cartCount() > 0" class="cart-count-badge">{{ cartCount() }}</ion-badge>
       </div>
 
-      <ion-button fill="solid" routerLink="/auth" aria-label="Abrir conta" class="nav-icon-button dark">
+      <!-- Botão de autenticação / menu -->
+      <ion-button
+        fill="solid"
+        aria-label="Menu de utilizador"
+        class="nav-icon-button dark"
+        (click)="isAuthenticated() ? openAuthPopover($event) : router.navigate(['/auth'])"
+      >
         <ion-icon name="person-outline" slot="icon-only"></ion-icon>
       </ion-button>
     </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content id="main-content">
   <div class="mx-auto max-w-5xl px-4 pb-8 pt-6">
     <div class="mb-6 text-center">
       <h1 class="mb-1 text-2xl font-bold text-foreground">Escolha o Seu Produto</h1>
@@ -36,7 +42,7 @@
 
     <div class="grid grid-cols-2 gap-4 md:grid-cols-3">
       <ion-card
-        *ngFor="let product of products"
+        *ngFor="let product of products()"
         class="m-0 cursor-pointer overflow-hidden rounded-2xl shadow-sm"
         style="--background: var(--card);"
         tabindex="0"
@@ -75,3 +81,4 @@
     </div>
   </div>
 </ion-content>
+

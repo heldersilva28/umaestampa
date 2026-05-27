@@ -1,0 +1,32 @@
+.auth-popup-content {
+  min-width: 250px;
+  background-color: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .user-info {
+    border-bottom: 1px solid var(--input-border);
+    padding-bottom: 12px;
+  }
+
+  .popup-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+
+    .popup-button {
+      --color: var(--ion-text-color);
+      text-align: left;
+      margin: 0;
+      border-radius: 0;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid var(--input-border);
+      }
+
+      &:hover {
+        background-color: var(--input-background);
+      }
+    }
+  }
+}

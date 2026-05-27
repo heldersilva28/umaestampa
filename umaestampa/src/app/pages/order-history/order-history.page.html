@@ -3,21 +3,95 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/catalog" text="Voltar"></ion-back-button>
     </ion-buttons>
-    <ion-title>Encomendas</ion-title>
+    <ion-title>Histórico de Encomendas</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div class="mx-auto max-w-3xl px-4 py-6">
-    <div *ngIf="orders.length === 0" class="flex flex-col items-center py-20 text-center">
+  <div class="page-shell">
+    <!-- Sem encomendas -->
+    <div *ngIf="orders().length === 0" class="flex flex-col items-center py-20 text-center">
       <div class="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gray-100">
-        <ion-icon name="cube-outline" class="text-4xl text-gray-300"></ion-icon>
+        <ion-icon name="bag-outline" class="text-4xl text-gray-300"></ion-icon>
       </div>
       <h1 class="mb-2 text-xl font-bold text-gray-900">Sem Encomendas</h1>
-      <p class="mb-6 text-sm text-gray-500">O histórico de encomendas aparecerá aqui.</p>
+      <p class="mb-6 text-sm text-gray-500">O histórico de encomendas aparecerá aqui quando fizer a sua primeira compra.</p>
       <ion-button routerLink="/catalog" class="primary-action">
         Explorar Produtos
       </ion-button>
     </div>
+
+    <!-- Lista de encomendas (layout similar ao mockup) -->
+    <div *ngIf="orders().length > 0" class="space-y-4 px-4 py-4">
+      <div *ngFor="let order of orders()" class="order-card rounded-lg border border-gray-200 bg-white p-4">
+        <!-- Cabeçalho da encomenda -->
+        <div class="mb-4 flex items-start justify-between pb-4">
+          <div class="flex-1">
+            <p class="text-sm font-medium text-gray-600">Encomenda</p>
+            <p class="text-lg font-bold text-foreground">{{ order.id }}</p>
+            <p class="mt-1 text-xs text-gray-500">{{ formatDate(order.date) }}</p>
+          </div>
+          <ion-button
+            fill="solid"
+            size="small"
+            [color]="getStatusColor(order.status)"
+            class="ml-2"
+          >
+            {{ order.status }}
+          </ion-button>
+        </div>
+
+        <!-- Itens da encomenda -->
+        <div class="mb-4 space-y-3 border-b border-gray-200 pb-4">
+          <div *ngFor="let item of order.items" class="flex items-start gap-4">
+            <!-- Imagem do produto -->
+            <div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100">
+              <img
+                [src]="item.product.image"
+                [alt]="item.product.name"
+                class="h-full w-full object-cover"
+              />
+            </div>
+            <!-- Informações do produto -->
+            <div class="flex-1">
+              <p class="font-semibold text-foreground">{{ item.product.name }}</p>
+              <p class="text-sm text-gray-600">Quantidade: {{ item.quantity }}</p>
+            </div>
+            <!-- Preço -->
+            <p class="text-right font-semibold text-foreground">
+              €{{ (item.product.price * item.quantity).toFixed(2) }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Dados de envio -->
+        <div class="mb-4 grid grid-cols-2 gap-4 border-b border-gray-200 pb-4">
+          <div>
+            <p class="text-xs font-semibold text-gray-600">Dados de Envio</p>
+            <p class="mt-1 text-sm font-medium text-foreground">{{ order.name }}</p>
+            <p class="text-xs text-gray-600">{{ order.email }}</p>
+            <p class="text-xs text-gray-600">{{ order.phone || 'N/A' }}</p>
+            <p class="mt-2 text-xs text-gray-600">
+              {{ order.address }}, {{ order.postalCode }}
+              <br />
+              {{ order.city }}
+            </p>
+          </div>
+          <!-- Resumo -->
+          <div class="text-right">
+            <p class="text-xs font-semibold text-gray-600">Resumo</p>
+            <p class="mt-1 text-xs text-gray-600">Subtotal</p>
+            <p class="text-sm font-medium text-foreground">€{{ subtotalByOrder(order).toFixed(2) }}</p>
+            <p class="mt-2 text-xs text-gray-600">Envio</p>
+            <p class="text-sm font-medium text-foreground">Grátis</p>
+            <p class="mt-2 border-t border-gray-200 pt-2 text-xs font-semibold text-gray-600">
+              Total
+            </p>
+            <p class="text-lg font-bold text-brand-accent">€{{ order.total.toFixed(2) }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </ion-content>
+

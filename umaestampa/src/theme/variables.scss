@@ -1,34 +1,70 @@
+/**
+ * Definição de Variáveis CSS Globais (Custom Properties)
+ * Utilizadas em toda a aplicação para manter consistência de styling
+ * As cores estão definidas em formato OKLch para melhor controlo perceptual
+ *
+ * Cores principais:
+ * - Primary: #030213 (preto profundo) - botões, textos principais
+ * - Secondary: #9810fa (roxo) - acentos, destaques
+ * - Brand Accent: #9810fa (roxo) - logo, elementos de marca
+ *
+ * Suporta tema claro (padrão) e tema escuro (.dark)
+ */
+
 :root {
+  // Configurações de fonte
   --font-size: 16px;
+
+  // Cores de background e foreground
   --background: #ffffff;
   --foreground: oklch(0.145 0 0);
   --card: #ffffff;
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
+
+  // Cores primárias
   --primary: #030213;
   --primary-foreground: oklch(1 0 0);
+
+  // Cores secundárias
   --secondary: oklch(0.95 0.0058 264.53);
   --secondary-foreground: #030213;
+
+  // Cores neutras
   --muted: #ececf0;
   --muted-foreground: #717182;
   --accent: #e9ebef;
   --accent-foreground: #030213;
+
+  // Cores de input
   --input-background: #f3f3f5;
   --input: transparent;
   --switch-background: #cbced4;
+
+  // Cores de border
   --border: rgba(0, 0, 0, 0.1);
+
+  // Cores de estado (sucesso, erro, etc)
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
+
+  // Font weights
   --font-weight-medium: 500;
   --font-weight-normal: 400;
+
+  // Cores para charts/gráficos
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
+
+  // Border radius
   --radius: 0.625rem;
+
+  // Cores de sidebar
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: #030213;
@@ -38,11 +74,13 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
+  // Cores de marca e página
   --brand-accent: #9810fa;
   --brand-accent-rgb: 152, 16, 250;
   --page-background: #f7f8fa;
   --success: #00a63e;
 
+  // Cores Ionic (compatibilidade com componentes Ionic)
   --ion-color-primary: #030213;
   --ion-color-primary-rgb: 3, 2, 19;
   --ion-color-primary-contrast: #ffffff;
@@ -71,6 +109,10 @@
   --ion-border-color: rgba(0, 0, 0, 0.1);
 }
 
+/**
+ * Tema escuro
+ * Aplicado quando a classe .dark está ativa no elemento raiz
+ */
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
