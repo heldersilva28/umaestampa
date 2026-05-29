@@ -44,7 +44,6 @@ import { OrderStatusBadgeComponent } from '../../components/order-status-badge.c
     IonIcon,
     IonTitle,
     IonToolbar,
-    HelpModalComponent,
     OrderStatusBadgeComponent,
   ],
 })

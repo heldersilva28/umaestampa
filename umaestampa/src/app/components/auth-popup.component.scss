@@ -1,32 +1,137 @@
 .auth-popup-content {
-  min-width: 250px;
-  background-color: var(--card);
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 300px;
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
 
-  .user-info {
-    border-bottom: 1px solid var(--input-border);
-    padding-bottom: 12px;
-  }
+.user-info {
+  padding: 20px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 
-  .popup-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 
-    .popup-button {
-      --color: var(--ion-text-color);
-      text-align: left;
-      margin: 0;
-      border-radius: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.06),
+    rgba(59, 130, 246, 0.06)
+  );
+}
 
-      &:not(:last-child) {
-        border-bottom: 1px solid var(--input-border);
-      }
+/* LABEL */
+.user-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ion-color-medium);
+  margin: 0 0 6px 0;
+}
 
-      &:hover {
-        background-color: var(--input-background);
-      }
-    }
-  }
+/* NAME */
+.user-name {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--ion-text-color);
+}
+
+/* EMAIL */
+.user-email {
+  font-size: 12px;
+  color: var(--ion-color-medium);
+  margin: 4px 0 0 0;
+}
+
+/* ===================== */
+/* ACTIONS WRAPPER */
+/* ===================== */
+
+.popup-actions {
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===================== */
+/* BUTTON BASE */
+/* ===================== */
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  width: 100%;
+  padding: 12px;
+
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  text-align: left;
+
+  color: var(--ion-text-color);
+}
+
+/* ICONS */
+.action-button ion-icon {
+  font-size: 18px;
+  color: inherit;
+}
+
+/* ===================== */
+/* HOVER / ACTIVE */
+/* ===================== */
+
+.action-button:hover {
+  background: rgba(0, 0, 0, 0.04);
+  transform: translateY(-1px);
+}
+
+.action-button:active {
+  transform: scale(0.98);
+}
+
+/* ===================== */
+/* DIVIDER */
+/* ===================== */
+
+.divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.06);
+  margin: 6px 8px;
+}
+
+/* ===================== */
+/* ORDER HISTORY (PRIMARY) */
+/* ===================== */
+
+.action-button.order-history {
+  color: #3b82f6;
+}
+
+.action-button.order-history:hover {
+  background: rgba(59, 130, 246, 0.08);
+}
+
+/* ===================== */
+/* LOGOUT (DANGER) */
+/* ===================== */
+
+.action-button.danger {
+  color: #ef4444;
+}
+
+.action-button.danger:hover {
+  background: rgba(239, 68, 68, 0.08);
 }

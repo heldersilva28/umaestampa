@@ -49,7 +49,6 @@ import { ToastService } from '../../services/toast.service';
     IonHeader,
     IonIcon,
     IonToolbar,
-    HelpModalComponent,
   ],
 })
 export class CartPage {

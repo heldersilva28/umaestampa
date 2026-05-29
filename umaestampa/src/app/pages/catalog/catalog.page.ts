@@ -46,7 +46,6 @@ import { Product, ProductsService } from '../../services/products.service';
     IonHeader,
     IonIcon,
     IonToolbar,
-    HelpModalComponent,
   ],
 })
 export class CatalogPage {
