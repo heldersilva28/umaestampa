@@ -1,0 +1,95 @@
+{
+  "help": {
+    "tooltips": {
+      "imageUpload": "Carregue uma imagem JPG, PNG ou WebP com resolução mínima de 300x300px",
+      "imagePosition": "Arraste a imagem sobre o produto para reposicioná-la",
+      "imageScale": "Use o slider para ajustar o tamanho da imagem (20% - 200%)",
+      "imageRotation": "Rotacione a imagem até -180° ou +180°",
+      "addToCart": "Adicione o produto personalizado ao seu carrinho",
+      "checkout": "Preencha todos os campos para finalizar sua compra",
+      "paymentMethod": "Selecione como deseja pagar a sua encomenda",
+      "shipping": "Envio grátis em encomendas acima de 50€"
+    },
+    "faq": [
+      {
+        "id": "how-to-customize",
+        "question": "Como personalizar um produto?",
+        "answer": "1. Selecione um produto no catálogo\n2. Carregue uma imagem da sua galeria\n3. Ajuste a posição, tamanho e rotação\n4. Clique 'Adicionar ao Carrinho'\n5. Proceda ao checkout"
+      },
+      {
+        "id": "image-requirements",
+        "question": "Quais são os requisitos da imagem?",
+        "answer": "- Formatos: JPG, PNG, WebP ou GIF\n- Tamanho máximo: 5MB\n- Resolução recomendada: 300x300px ou superior\n- Imagens de baixa resolução podem perder qualidade na impressão"
+      },
+      {
+        "id": "payment-methods",
+        "question": "Que métodos de pagamento estão disponíveis?",
+        "answer": "- Cartão de Crédito/Débito (Visa, Mastercard, American Express)\n- MB WAY (pagamento instantâneo por telemóvel)\n- Transferência Bancária (dados enviados por email)"
+      },
+      {
+        "id": "delivery-time",
+        "question": "Quanto tempo leva a entrega?",
+        "answer": "O prazo estimado de entrega é de 5-7 dias úteis após a confirmação da encomenda. Receberá um código de rastreio por email."
+      },
+      {
+        "id": "order-tracking",
+        "question": "Como acompanhar minha encomenda?",
+        "answer": "Aceda ao histórico de encomendas no menu de utilizador. Lá encontrará o estado da sua encomenda:\n- Pendente: A sua encomenda foi recebida\n- Em produção: Está a ser criada\n- Enviado: A sua encomenda está a caminho\n- Entregue: Encomenda recebida"
+      },
+      {
+        "id": "cancel-order",
+        "question": "Posso cancelar uma encomenda?",
+        "answer": "Pode cancelar encomendas com estado 'Pendente' ou 'Em produção'. Contacte-nos para solicitar o cancelamento. Encomendas já enviadas não podem ser canceladas."
+      },
+      {
+        "id": "return-policy",
+        "question": "Qual é a política de devoluções?",
+        "answer": "Aceita​mos devoluções em 30 dias. O produto deve estar por abrir e em perfeitas condições. Contacte o nosso suporte para iniciar uma devolução."
+      },
+      {
+        "id": "account-login",
+        "question": "Preciso de uma conta para comprar?",
+        "answer": "Sim, é necessário criar uma conta para fazer compras. Isto permite-nos rastrear as suas encomendas e histórico de compras."
+      },
+      {
+        "id": "edit-before-checkout",
+        "question": "Posso editar um produto após adicioná-lo ao carrinho?",
+        "answer": "Sim! Pode:\n1. Remover o item do carrinho\n2. Voltar para o catálogo\n3. Selecionar o produto novamente e fazer novas personalizações"
+      },
+      {
+        "id": "contact-support",
+        "question": "Como contactar o suporte?",
+        "answer": "Para dúvidas ou problemas, entre em contacto:\n- Email: suporte@umaestampa.pt\n- Telefone: +351 XXX XXX XXX\n- Horário: Segunda a Sexta, 9h-18h"
+      }
+    ],
+    "tutorials": [
+      {
+        "id": "first-order",
+        "title": "Como fazer a minha primeira encomenda",
+        "steps": [
+          "Crie uma conta com o seu email",
+          "Navegue até ao catálogo de produtos",
+          "Selecione um produto para personalizar",
+          "Carregue a sua imagem e ajuste-a",
+          "Adicione ao carrinho",
+          "Proceda ao checkout",
+          "Preencha os seus dados de entrega",
+          "Escolha o método de pagamento",
+          "Confirme a sua encomenda",
+          "Receberá um email de confirmação"
+        ]
+      },
+      {
+        "id": "account-management",
+        "title": "Gerir a minha conta",
+        "steps": [
+          "Clique no ícone de utilizador no canto superior direito",
+          "Se autenticado, aparecerá um menu com opções",
+          "Aceda ao histórico de encomendas para ver compras anteriores",
+          "Atualize seus dados de perfil (se disponível)",
+          "Termine a sessão quando terminar"
+        ]
+      }
+    ]
+  }
+}

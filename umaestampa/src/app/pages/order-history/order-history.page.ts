@@ -10,11 +10,14 @@ import {
   IonIcon,
   IonTitle,
   IonToolbar,
+  ModalController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { arrowBackOutline, bagOutline, checkmarkDoneOutline, timeOutline } from 'ionicons/icons';
+import { arrowBackOutline, bagOutline, checkmarkDoneOutline, helpCircleOutline, timeOutline } from 'ionicons/icons';
 import { AuthService } from '../../services/auth.service';
 import { Order, OrdersService } from '../../services/orders.service';
+import { HelpModalComponent } from '../../components/help-modal.component';
+import { OrderStatusBadgeComponent } from '../../components/order-status-badge.component';
 
 /**
  * Página de Histórico de Encomendas
@@ -41,12 +44,15 @@ import { Order, OrdersService } from '../../services/orders.service';
     IonIcon,
     IonTitle,
     IonToolbar,
+    HelpModalComponent,
+    OrderStatusBadgeComponent,
   ],
 })
 export class OrderHistoryPage implements OnInit {
   private readonly ordersService = inject(OrdersService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly modalController = inject(ModalController);
 
   // Array reativo de encomendas do utilizador autenticado
   readonly orders = this.ordersService.orders;
@@ -66,6 +72,7 @@ export class OrderHistoryPage implements OnInit {
       arrowBackOutline,
       bagOutline,
       checkmarkDoneOutline,
+      helpCircleOutline,
       timeOutline,
     });
   }
@@ -130,5 +137,18 @@ export class OrderHistoryPage implements OnInit {
    */
   subtotalByOrder(order: Order): number {
     return order.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  }
+
+  /**
+   * Abre o modal de ajuda com FAQs e tutoriais
+   * @async
+   * @returns {Promise<void>}
+   */
+  async openHelp(): Promise<void> {
+    const modal = await this.modalController.create({
+      component: HelpModalComponent,
+      cssClass: 'help-modal',
+    });
+    await modal.present();
   }
 }

@@ -457,3 +457,41 @@ ion-textarea {
   --padding-start: 0;
   --padding-end: 0;
 }
+
+/**
+ * Classe: Form Validation
+ * Estilos para campos de formulário com erro
+ */
+.field-error {
+  --border-bottom: 2px solid var(--danger) !important;
+  --highlight-color-invalid: var(--danger);
+  background-color: rgba(var(--danger-rgb), 0.05);
+}
+
+.error-message {
+  display: block;
+  color: var(--danger);
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 4px;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+
+  & > span {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+
+    &::after {
+      content: '';
+      margin-left: 2px;
+    }
+  }
+}

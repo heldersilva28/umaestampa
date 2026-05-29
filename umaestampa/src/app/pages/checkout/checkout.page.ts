@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import {
@@ -16,7 +16,7 @@ import {
   IonSpinner,
   IonTextarea,
   IonToolbar,
-  ToastController,
+  ModalController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -26,12 +26,17 @@ import {
   cartOutline,
   checkmarkCircle,
   colorPaletteOutline,
+  helpCircleOutline,
   personOutline,
   phonePortraitOutline,
 } from 'ionicons/icons';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { OrdersService, Order } from '../../services/orders.service';
+import { ToastService } from '../../services/toast.service';
+import { ValidationService } from '../../services/validation.service';
+import { TooltipDirective } from '../../directives/tooltip.directive';
+import { HelpModalComponent } from '../../components/help-modal.component';
 
 /**
  * Página de Checkout
@@ -65,14 +70,17 @@ import { OrdersService, Order } from '../../services/orders.service';
     IonSpinner,
     IonTextarea,
     IonToolbar,
+    TooltipDirective,
   ],
 })
 export class CheckoutPage implements OnInit {
   private readonly cartService = inject(CartService);
   private readonly ordersService = inject(OrdersService);
   private readonly router = inject(Router);
-  private readonly toastCtrl = inject(ToastController);
+  private readonly toastService = inject(ToastService);
+  private readonly validationService = inject(ValidationService);
   private readonly authService = inject(AuthService);
+  private readonly modalController = inject(ModalController);
 
   // Itens do carrinho
   readonly items = this.cartService.items;
@@ -92,7 +100,10 @@ export class CheckoutPage implements OnInit {
   orderId = '';
 
   // Flag: indica se a requisição de checkout está em progresso
-  isLoading = false;
+  isLoading = signal(false);
+
+  // Erros de validação por campo
+  errors = signal<Record<string, string>>({});
 
   /**
    * Dados de formulário para checkout
@@ -128,6 +139,7 @@ export class CheckoutPage implements OnInit {
       cartOutline,
       checkmarkCircle,
       colorPaletteOutline,
+      helpCircleOutline,
       personOutline,
       phonePortraitOutline,
     });
@@ -137,6 +149,7 @@ export class CheckoutPage implements OnInit {
    * Inicializa a página
    * Valida autenticação e redireciona para login se necessário
    * Preenche dados de utilizador se autenticado
+   * Carrega dados salvos do Storage em caso de erro anterior
    * @returns {void}
    */
   ngOnInit(): void {
@@ -154,6 +167,55 @@ export class CheckoutPage implements OnInit {
   }
 
   /**
+   * Valida campo individual em tempo real
+   * Exibe erro inline se inválido
+   * @param fieldName - Nome do campo a validar
+   */
+  validateField(fieldName: keyof typeof this.formData): void {
+    const value = this.formData[fieldName];
+    const currentErrors = { ...this.errors() };
+    let validationResult: { isValid: boolean; error?: string } = { isValid: true };
+
+    switch (fieldName) {
+      case 'name':
+        validationResult = this.validationService.validateName(value as string);
+        break;
+      case 'email':
+        validationResult = this.validationService.validateEmail(value as string);
+        break;
+      case 'phone':
+        validationResult = this.validationService.validatePhone(value as string);
+        break;
+      case 'address':
+        validationResult = this.validationService.validateAddress(value as string);
+        break;
+      case 'city':
+        validationResult = this.validationService.validateCity(value as string);
+        break;
+      case 'postalCode':
+        validationResult = this.validationService.validatePostalCode(value as string);
+        break;
+    }
+
+    if (validationResult.isValid) {
+      delete currentErrors[fieldName];
+    } else {
+      currentErrors[fieldName] = validationResult.error || 'Campo inválido';
+    }
+
+    this.errors.set(currentErrors);
+  }
+
+  /**
+   * Verifica se o formulário é válido
+   * @returns true se todos os campos obrigatórios são válidos
+   */
+  isFormValid(): boolean {
+    const validation = this.validationService.validateCheckoutForm(this.formData);
+    return validation.isValid;
+  }
+
+  /**
    * Processa o pedido
    * Valida o formulário, simula o processamento e gera um ID de pedido
    * Guarda o pedido no histórico de encomendas
@@ -161,47 +223,80 @@ export class CheckoutPage implements OnInit {
    * @returns {Promise<void>}
    */
   async placeOrder(): Promise<void> {
-    if (this.items().length === 0) {
-      await this.showToast('O carrinho está vazio.', 'warning');
-      return;
+    try {
+      if (this.items().length === 0) {
+        await this.toastService.warning('O carrinho está vazio.');
+        return;
+      }
+
+      // Validar formulário completo
+      const validation = this.validationService.validateCheckoutForm(this.formData);
+      if (!validation.isValid) {
+        this.errors.set(validation.errors);
+        await this.toastService.error(
+          `Preencha corretamente os campos assinalados. ${Object.values(validation.errors)[0]}`
+        );
+        return;
+      }
+
+      this.isLoading.set(true);
+
+      // Simula o processamento do pedido no backend
+      await this.delay(1500);
+
+      // Gera ID único: "UE" + últimos 6 dígitos do timestamp
+      this.orderId = `UE${Date.now().toString().slice(-6)}`;
+
+      // Cria o objeto da encomenda com todos os detalhes
+      const newOrder: Order = {
+        id: this.orderId,
+        userId: this.authService.user?.id || '',
+        date: new Date(),
+        total: this.total(),
+        status: 'Pendente',
+        name: this.formData.name,
+        email: this.formData.email,
+        phone: this.formData.phone,
+        address: this.formData.address,
+        city: this.formData.city,
+        postalCode: this.formData.postalCode,
+        items: this.items(),
+      };
+
+      // Guarda a encomenda no histórico
+      await this.ordersService.addOrder(newOrder);
+
+      // Limpa o carrinho após confirmação do pedido
+      await this.cartService.clear();
+
+      // Limpa erros
+      this.errors.set({});
+
+      // Exibe confirmação
+      this.orderPlaced = true;
+      await this.toastService.success('Encomenda confirmada com sucesso!');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      await this.toastService.error(
+        `Falha ao confirmar encomenda: ${errorMessage}. Tente novamente.`
+      );
+      console.error('Erro ao processar encomenda:', error);
+    } finally {
+      this.isLoading.set(false);
     }
+  }
 
-    const { name, email, address, city, postalCode } = this.formData;
-    if (!name || !email || !address || !city || !postalCode) {
-      await this.showToast('Preencha todos os campos obrigatórios.', 'warning');
-      return;
-    }
-
-    // Simula o processamento do pedido no backend
-    this.isLoading = true;
-    await this.delay(1000);
-    this.isLoading = false;
-
-    // Gera ID único: "UE" + últimos 6 dígitos do timestamp
-    this.orderId = `UE${Date.now().toString().slice(-6)}`;
-    this.orderPlaced = true;
-
-    // Cria o objeto da encomenda com todos os detalhes
-    const newOrder: Order = {
-      id: this.orderId,
-      userId: this.authService.user?.id || '', // O OrdersService validará isto
-      date: new Date(),
-      total: this.total(),
-      status: 'Pendente',
-      name: this.formData.name,
-      email: this.formData.email,
-      phone: this.formData.phone,
-      address: this.formData.address,
-      city: this.formData.city,
-      postalCode: this.formData.postalCode,
-      items: this.items(),
-    };
-
-    // Guarda a encomenda no histórico
-    await this.ordersService.addOrder(newOrder);
-
-    // Limpa o carrinho após confirmação do pedido
-    await this.cartService.clear();
+  /**
+   * Abre o modal de ajuda
+   * @async
+   * @returns {Promise<void>}
+   */
+  async openHelp(): Promise<void> {
+    const modal = await this.modalController.create({
+      component: HelpModalComponent,
+      cssClass: 'help-modal',
+    });
+    await modal.present();
   }
 
   /**
@@ -210,24 +305,6 @@ export class CheckoutPage implements OnInit {
    */
   goToCatalog(): void {
     this.router.navigate(['/catalog']);
-  }
-
-  /**
-   * Exibe uma notificação toast ao utilizador
-   * @private
-   * @async
-   * @param {string} message - Mensagem a exibir
-   * @param {string} color - Cor da notificação (success, warning, danger, etc)
-   * @returns {Promise<void>}
-   */
-  private async showToast(message: string, color: string): Promise<void> {
-    const toast = await this.toastCtrl.create({
-      message,
-      color,
-      duration: 2000,
-      position: 'bottom',
-    });
-    await toast.present();
   }
 
   /**

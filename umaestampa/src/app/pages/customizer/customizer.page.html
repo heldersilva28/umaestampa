@@ -1,14 +1,43 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/catalog" text="Voltar"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Personalizar</ion-title>
+  <ion-toolbar class="shop-header">
+    <div class="shop-header-inner">
+      <div class="brand-lockup">
+        <div class="brand-mark">
+          <ion-icon name="color-palette-outline"></ion-icon>
+        </div>
+        <div class="min-w-0">
+          <p class="brand-title">UmaEstampa</p>
+          <p class="brand-subtitle">Personalize os seus artigos</p>
+        </div>
+      </div>
+
+      <div class="relative shrink-0">
+        <ion-button fill="solid" routerLink="/cart" aria-label="Abrir carrinho" class="nav-icon-button light">
+          <ion-icon name="cart-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+        <ion-badge *ngIf="cartCount() > 0" class="cart-count-badge">{{ cartCount() }}</ion-badge>
+      </div>
+
+      <div class="relative shrink-0">
+        <ion-button fill="solid" (click)="openHelp()" aria-label="Abrir ajuda" class="nav-icon-button dark">
+          <ion-icon name="help-circle-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+
+      <ion-button fill="solid" routerLink="/auth" aria-label="Abrir conta" class="nav-icon-button dark">
+        <ion-icon name="person-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content *ngIf="product as selectedProduct">
+  
   <div class="mx-auto max-w-3xl pb-10">
+    <button type="button" class="checkout-back" routerLink="/catalog">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+      <span>Voltar ao Catálogo</span>
+    </button>
     <div
       #previewArea
       class="relative mx-4 mt-4 aspect-square touch-none select-none overflow-hidden rounded-2xl bg-input-background"
@@ -62,11 +91,18 @@
         fill="outline"
         style="--color: var(--primary); --border-color: var(--border); --border-radius: 12px;"
         class="mb-5"
+        [disabled]="isLoading()"
         (click)="fileInput.click()"
       >
-        <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+        <ion-spinner *ngIf="isLoading()" name="crescent" slot="start"></ion-spinner>
+        <ion-icon *ngIf="!isLoading()" name="cloud-upload-outline" slot="start"></ion-icon>
         {{ uploadedImage ? 'Trocar Imagem' : 'Carregar Imagem da Galeria' }}
       </ion-button>
+
+      <div *ngIf="resolutionWarning()" class="warning-box mb-4">
+        <ion-icon name="warning" slot="start"></ion-icon>
+        <span>{{ resolutionWarning() }}</span>
+      </div>
 
       <div *ngIf="uploadedImage" class="space-y-5">
         <div>
@@ -78,6 +114,7 @@
             [max]="200"
             [(ngModel)]="imageScale"
             style="--bar-background: var(--muted); --bar-background-active: var(--brand-accent); --knob-background: var(--brand-accent);"
+            appTooltip="Ajuste o tamanho da imagem de 20% a 200%"
           >
             <ion-icon name="remove" slot="start" class="text-gray-400"></ion-icon>
             <ion-icon name="add" slot="end" class="text-gray-400"></ion-icon>
@@ -93,13 +130,14 @@
             [max]="180"
             [(ngModel)]="imageRotation"
             style="--bar-background: var(--muted); --bar-background-active: var(--brand-accent); --knob-background: var(--brand-accent);"
+            appTooltip="Rotacione a imagem de -180° a +180°"
           >
             <ion-icon name="remove" slot="start" class="text-gray-400"></ion-icon>
             <ion-icon name="add" slot="end" class="text-gray-400"></ion-icon>
           </ion-range>
         </div>
 
-        <ion-button fill="clear" size="small" class="text-gray-500" (click)="resetAdjustments()">
+        <ion-button fill="clear" size="small" class="text-gray-500" (click)="resetAdjustments()" appTooltip="Repor tamanho e rotação aos valores padrão">
           <ion-icon name="refresh-outline" slot="start"></ion-icon>
           Repor ajustes
         </ion-button>
@@ -109,11 +147,12 @@
         expand="block"
         class="mt-6"
         class="primary-action"
-        [disabled]="!uploadedImage"
+        [disabled]="!uploadedImage || isLoading()"
         (click)="addToCart()"
       >
-        <ion-icon name="cart-outline" slot="start"></ion-icon>
-        Adicionar ao Carrinho
+        <ion-spinner *ngIf="isLoading()" name="crescent" slot="start"></ion-spinner>
+        <ion-icon *ngIf="!isLoading()" name="cart-outline" slot="start"></ion-icon>
+        {{ isLoading() ? 'A adicionar...' : 'Adicionar ao Carrinho' }}
       </ion-button>
     </div>
   </div>

@@ -18,6 +18,10 @@
         <ion-badge *ngIf="cartCount() > 0" class="cart-count-badge">{{ cartCount() }}</ion-badge>
       </div>
 
+      <ion-button fill="solid" (click)="openHelp()" aria-label="Abrir ajuda" class="nav-icon-button dark">
+        <ion-icon name="help-circle-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+
       <ion-button fill="solid" routerLink="/auth" aria-label="Abrir conta" class="nav-icon-button dark">
         <ion-icon name="person-outline" slot="icon-only"></ion-icon>
       </ion-button>
@@ -56,23 +60,46 @@
       <div class="field-stack">
         <label>
           <span>Nome Completo *</span>
-          <ion-item lines="none" class="form-field">
-            <ion-input type="text" placeholder="João Silva" [(ngModel)]="formData.name"></ion-input>
+          <ion-item lines="none" class="form-field" [class.field-error]="errors()['name']">
+            <ion-input
+              type="text"
+              placeholder="João Silva"
+              [(ngModel)]="formData.name"
+              (ionBlur)="validateField('name')"
+              appTooltip="Insira o seu nome completo para validação de entrega"
+            ></ion-input>
           </ion-item>
+          <span *ngIf="errors()['name']" class="error-message">{{ errors()['name'] }}</span>
         </label>
 
         <label>
           <span>Email *</span>
-          <ion-item lines="none" class="form-field">
-            <ion-input type="email" placeholder="joao@exemplo.pt" [(ngModel)]="formData.email" autocomplete="email"></ion-input>
+          <ion-item lines="none" class="form-field" [class.field-error]="errors()['email']">
+            <ion-input
+              type="email"
+              placeholder="joao@exemplo.pt"
+              [(ngModel)]="formData.email"
+              (ionBlur)="validateField('email')"
+              autocomplete="email"
+              appTooltip="Receberá confirmação e rastreio por aqui"
+            ></ion-input>
           </ion-item>
+          <span *ngIf="errors()['email']" class="error-message">{{ errors()['email'] }}</span>
         </label>
 
         <label>
           <span>Telefone *</span>
-          <ion-item lines="none" class="form-field">
-            <ion-input type="tel" placeholder="+351 912 345 678" [(ngModel)]="formData.phone" autocomplete="tel"></ion-input>
+          <ion-item lines="none" class="form-field" [class.field-error]="errors()['phone']">
+            <ion-input
+              type="tel"
+              placeholder="+351 912 345 678"
+              [(ngModel)]="formData.phone"
+              (ionBlur)="validateField('phone')"
+              autocomplete="tel"
+              appTooltip="Formato: +351 XXX XXX XXX ou +351 9XXXXXXXX"
+            ></ion-input>
           </ion-item>
+          <span *ngIf="errors()['phone']" class="error-message">{{ errors()['phone'] }}</span>
         </label>
       </div>
     </section>
@@ -83,23 +110,44 @@
       <div class="field-stack">
         <label>
           <span>Morada *</span>
-          <ion-item lines="none" class="form-field">
-            <ion-input type="text" placeholder="Rua Exemplo, nº 123" [(ngModel)]="formData.address"></ion-input>
+          <ion-item lines="none" class="form-field" [class.field-error]="errors()['address']">
+            <ion-input
+              type="text"
+              placeholder="Rua Exemplo, nº 123"
+              [(ngModel)]="formData.address"
+              (ionBlur)="validateField('address')"
+              appTooltip="Rua/Avenida, número e complementos (prédio, andar, etc)"
+            ></ion-input>
           </ion-item>
+          <span *ngIf="errors()['address']" class="error-message">{{ errors()['address'] }}</span>
         </label>
 
         <label>
           <span>Cidade *</span>
-          <ion-item lines="none" class="form-field">
-            <ion-input type="text" placeholder="Lisboa" [(ngModel)]="formData.city"></ion-input>
+          <ion-item lines="none" class="form-field" [class.field-error]="errors()['city']">
+            <ion-input
+              type="text"
+              placeholder="Lisboa"
+              [(ngModel)]="formData.city"
+              (ionBlur)="validateField('city')"
+              appTooltip="Cidade ou localidade de entrega"
+            ></ion-input>
           </ion-item>
+          <span *ngIf="errors()['city']" class="error-message">{{ errors()['city'] }}</span>
         </label>
 
         <label>
           <span>Código Postal *</span>
-          <ion-item lines="none" class="form-field">
-            <ion-input type="text" placeholder="1000-001" [(ngModel)]="formData.postalCode"></ion-input>
+          <ion-item lines="none" class="form-field" [class.field-error]="errors()['postalCode']">
+            <ion-input
+              type="text"
+              placeholder="1000-001"
+              [(ngModel)]="formData.postalCode"
+              (ionBlur)="validateField('postalCode')"
+              appTooltip="Formato português: XXXX-XXX (ex: 1000-001)"
+            ></ion-input>
           </ion-item>
+          <span *ngIf="errors()['postalCode']" class="error-message">{{ errors()['postalCode'] }}</span>
         </label>
 
         <label>
@@ -109,6 +157,7 @@
               placeholder="Instruções especiais de entrega"
               [(ngModel)]="formData.notes"
               autoGrow="true"
+              appTooltip="Ex: 'Deixar no armazém', 'Toque à campainha 2', etc"
             ></ion-textarea>
           </ion-item>
         </label>
@@ -149,9 +198,14 @@
       </ion-radio-group>
     </section>
 
-    <ion-button expand="block" class="primary-action confirm-order-button" [disabled]="isLoading" (click)="placeOrder()">
-      <ion-spinner *ngIf="isLoading" name="crescent" slot="start"></ion-spinner>
-      {{ isLoading ? 'A processar...' : 'Confirmar Encomenda' }}
+    <ion-button
+      expand="block"
+      class="primary-action confirm-order-button"
+      [disabled]="isLoading() || !isFormValid()"
+      (click)="placeOrder()"
+    >
+      <ion-spinner *ngIf="isLoading()" name="crescent" slot="start"></ion-spinner>
+      {{ isLoading() ? 'A processar...' : 'Confirmar Encomenda' }}
     </ion-button>
 
     <section class="surface-card checkout-summary-card">

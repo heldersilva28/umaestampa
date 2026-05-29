@@ -18,6 +18,13 @@
         <ion-badge *ngIf="cartCount() > 0" class="cart-count-badge">{{ cartCount() }}</ion-badge>
       </div>
 
+
+      <div class="relative shrink-0">
+        <ion-button fill="solid" (click)="openHelp()" aria-label="Abrir ajuda" class="nav-icon-button dark">
+          <ion-icon name="help-circle-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+
       <!-- Botão de autenticação / menu -->
       <ion-button
         fill="solid"

@@ -2,12 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
+  AlertController,
   IonBadge,
   IonButton,
   IonContent,
   IonHeader,
   IonIcon,
   IonToolbar,
+  ModalController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -16,11 +18,14 @@ import {
   bagOutline,
   cartOutline,
   colorPaletteOutline,
+  helpCircleOutline,
   personOutline,
   remove,
   trashOutline,
 } from 'ionicons/icons';
 import { CartService } from '../../services/cart.service';
+import { HelpModalComponent } from '../../components/help-modal.component';
+import { ToastService } from '../../services/toast.service';
 
 /**
  * Página do Carrinho de Compras
@@ -44,10 +49,14 @@ import { CartService } from '../../services/cart.service';
     IonHeader,
     IonIcon,
     IonToolbar,
+    HelpModalComponent,
   ],
 })
 export class CartPage {
   private readonly cartService = inject(CartService);
+  private readonly alertController = inject(AlertController);
+  private readonly toastService = inject(ToastService);
+  private readonly modalController = inject(ModalController);
 
   // Lista reativa de itens do carrinho
   readonly items = this.cartService.items;
@@ -75,6 +84,7 @@ export class CartPage {
       bagOutline,
       cartOutline,
       colorPaletteOutline,
+      helpCircleOutline,
       personOutline,
       remove,
       trashOutline,
@@ -92,12 +102,51 @@ export class CartPage {
   }
 
   /**
-   * Remove um item do carrinho
+   * Remove um item do carrinho com confirmação
+   * Exibe alerta pedindo confirmação antes de remover
    * @async
    * @param {number} index - Índice do item a remover
    * @returns {Promise<void>}
    */
   async removeItem(index: number): Promise<void> {
-    await this.cartService.removeItem(index);
+    const item = this.items()[index];
+    if (!item) return;
+
+    const alert = await this.alertController.create({
+      header: 'Remover do Carrinho?',
+      message: `Tem a certeza que deseja remover "${item.product.name}" do carrinho?`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            // Nada a fazer
+          },
+        },
+        {
+          text: 'Remover',
+          role: 'destructive',
+          handler: async () => {
+            await this.cartService.removeItem(index);
+            await this.toastService.success(`${item.product.name} removido do carrinho`);
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  /**
+   * Abre o modal de ajuda com FAQs e tutoriais
+   * @async
+   * @returns {Promise<void>}
+   */
+  async openHelp(): Promise<void> {
+    const modal = await this.modalController.create({
+      component: HelpModalComponent,
+      cssClass: 'help-modal',
+    });
+    await modal.present();
   }
 }

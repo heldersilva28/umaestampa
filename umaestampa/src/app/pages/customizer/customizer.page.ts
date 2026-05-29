@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   IonBackButton,
   IonButton,
@@ -11,14 +11,21 @@ import {
   IonIcon,
   IonLabel,
   IonRange,
+  IonSpinner,
   IonTitle,
   IonToolbar,
-  ToastController,
+  ModalController,
+  IonBadge
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { add, cartOutline, cloudUploadOutline, refreshOutline, remove } from 'ionicons/icons';
+import { add, cartOutline, cloudUploadOutline, colorPaletteOutline, helpCircleOutline, personOutline, refreshOutline, remove } from 'ionicons/icons';
 import { CartService } from '../../services/cart.service';
+import { HelpModalComponent } from '../../components/help-modal.component';
 import { Product, ProductsService } from '../../services/products.service';
+import { ToastService } from '../../services/toast.service';
+import { ValidationService } from '../../services/validation.service';
+import { TooltipDirective } from '../../directives/tooltip.directive';
+import { arrowBackOutline } from 'ionicons/icons';
 
 /**
  * Página de Customização de Produtos
@@ -36,6 +43,7 @@ import { Product, ProductsService } from '../../services/products.service';
   imports: [
     CommonModule,
     FormsModule,
+    RouterLink,
     IonBackButton,
     IonButton,
     IonButtons,
@@ -44,8 +52,12 @@ import { Product, ProductsService } from '../../services/products.service';
     IonIcon,
     IonLabel,
     IonRange,
+    IonSpinner,
     IonTitle,
     IonToolbar,
+    IonBadge,
+    HelpModalComponent,
+    TooltipDirective,
   ],
 })
 export class CustomizerPage implements OnInit {
@@ -55,7 +67,12 @@ export class CustomizerPage implements OnInit {
   private readonly router = inject(Router);
   private readonly productsService = inject(ProductsService);
   private readonly cartService = inject(CartService);
-  private readonly toastCtrl = inject(ToastController);
+  private readonly toastService = inject(ToastService);
+  private readonly validationService = inject(ValidationService);
+  private readonly modalController = inject(ModalController);
+
+    // Quantidade total de itens
+  readonly cartCount = this.cartService.count;
 
   // Produto atualmente sendo customizado
   product: Product | undefined;
@@ -75,13 +92,29 @@ export class CustomizerPage implements OnInit {
   // Flag para controlar se o utilizador está a arrastar a imagem
   isDragging = false;
 
+  // Loading state durante upload e validação
+  isLoading = signal(false);
+
+  // Mensagem de aviso de resolução
+  resolutionWarning = signal<string | null>(null);
+
   /**
    * Construtor - Registra os ícones a utilizar no template
    * @constructor
    */
-  constructor() {
-    addIcons({ add, cartOutline, cloudUploadOutline, refreshOutline, remove });
-  }
+constructor() {
+  addIcons({
+    add,
+    cartOutline,
+    cloudUploadOutline,
+    colorPaletteOutline,
+    helpCircleOutline,
+    personOutline,
+    refreshOutline,
+    remove,
+    arrowBackOutline
+  });
+}
 
   /**
    * Inicialização do componente
@@ -100,11 +133,13 @@ export class CustomizerPage implements OnInit {
 
   /**
    * Manipula a seleção de ficheiro de imagem
-   * Converte a imagem para formato Data URL para pré-visualização
+   * Valida tipo de ficheiro, tamanho e resolução
+   * Exibe feedback ao utilizador
+   * @async
    * @param {Event} event - Evento do input de ficheiro
-   * @returns {void}
+   * @returns {Promise<void>}
    */
-  onFileSelected(event: Event): void {
+  async onFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
 
@@ -112,12 +147,53 @@ export class CustomizerPage implements OnInit {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (readerEvent) => {
-      this.uploadedImage = readerEvent.target?.result as string;
-      this.resetAdjustments();
-    };
-    reader.readAsDataURL(file);
+    try {
+      this.isLoading.set(true);
+      this.resolutionWarning.set(null);
+
+      // Validar tipo de ficheiro
+      const typeCheck = this.validationService.validateImageType(file);
+      if (!typeCheck.isValid) {
+        await this.toastService.error(typeCheck.error!);
+        this.isLoading.set(false);
+        return;
+      }
+
+      // Validar tamanho de ficheiro
+      const sizeCheck = this.validationService.validateFileSize(file);
+      if (!sizeCheck.isValid) {
+        await this.toastService.error(sizeCheck.error!);
+        this.isLoading.set(false);
+        return;
+      }
+
+      // Validar resolução de imagem
+      const resolutionCheck = await this.validationService.validateImageResolution(file);
+      if (!resolutionCheck.isValid) {
+        // Mostrar como aviso, não erro
+        this.resolutionWarning.set(resolutionCheck.error!);
+        await this.toastService.warning(resolutionCheck.error!);
+      }
+
+      // Ler ficheiro se passou validações
+      const reader = new FileReader();
+      reader.onload = (readerEvent) => {
+        this.uploadedImage = readerEvent.target?.result as string;
+        this.resetAdjustments();
+        this.isLoading.set(false);
+        this.toastService.success('Imagem carregada com sucesso!');
+      };
+      reader.onerror = async () => {
+        await this.toastService.error('Falha ao carregar imagem. Tente novamente.');
+        this.isLoading.set(false);
+      };
+
+      reader.readAsDataURL(file);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      await this.toastService.error(`Erro ao validar imagem: ${errorMessage}`);
+      this.isLoading.set(false);
+    }
   }
 
   /**
@@ -181,26 +257,30 @@ export class CustomizerPage implements OnInit {
    */
   async addToCart(): Promise<void> {
     if (!this.product || !this.uploadedImage) {
+      await this.toastService.error('Por favor carregue uma imagem antes de adicionar ao carrinho.');
       return;
     }
 
-    await this.cartService.addItem({
-      product: this.product,
-      imageUrl: this.uploadedImage,
-      imagePosition: this.imagePosition,
-      imageScale: this.imageScale,
-      imageRotation: this.imageRotation,
-      quantity: 1,
-    });
+    try {
+      this.isLoading.set(true);
 
-    const toast = await this.toastCtrl.create({
-      message: `${this.product.name} adicionado ao carrinho.`,
-      duration: 1800,
-      color: 'success',
-      position: 'bottom',
-    });
-    await toast.present();
-    this.router.navigate(['/cart']);
+      await this.cartService.addItem({
+        product: this.product,
+        imageUrl: this.uploadedImage,
+        imagePosition: this.imagePosition,
+        imageScale: this.imageScale,
+        imageRotation: this.imageRotation,
+        quantity: 1,
+      });
+
+      await this.toastService.success(`${this.product.name} adicionado ao carrinho!`);
+      this.router.navigate(['/cart']);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      await this.toastService.error(`Falha ao adicionar ao carrinho: ${errorMessage}`);
+    } finally {
+      this.isLoading.set(false);
+    }
   }
 
   /**
@@ -224,5 +304,18 @@ export class CustomizerPage implements OnInit {
       x: Math.max(5, Math.min(95, x)),
       y: Math.max(5, Math.min(95, y)),
     };
+  }
+
+  /**
+   * Abre o modal de ajuda com FAQs e tutoriais
+   * @async
+   * @returns {Promise<void>}
+   */
+  async openHelp(): Promise<void> {
+    const modal = await this.modalController.create({
+      component: HelpModalComponent,
+      cssClass: 'help-modal',
+    });
+    await modal.present();
   }
 }

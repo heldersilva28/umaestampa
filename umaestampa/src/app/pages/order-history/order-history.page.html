@@ -4,6 +4,11 @@
       <ion-back-button defaultHref="/catalog" text="Voltar"></ion-back-button>
     </ion-buttons>
     <ion-title>Histórico de Encomendas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="solid" (click)="openHelp()" aria-label="Abrir ajuda">
+        <ion-icon name="help-circle-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -31,14 +36,7 @@
             <p class="text-lg font-bold text-foreground">{{ order.id }}</p>
             <p class="mt-1 text-xs text-gray-500">{{ formatDate(order.date) }}</p>
           </div>
-          <ion-button
-            fill="solid"
-            size="small"
-            [color]="getStatusColor(order.status)"
-            class="ml-2"
-          >
-            {{ order.status }}
-          </ion-button>
+          <app-order-status-badge [status]="order.status" class="ml-2"></app-order-status-badge>
         </div>
 
         <!-- Itens da encomenda -->

@@ -1,0 +1,6 @@
+<div class="status-badge" [ngClass]="getSizeClass()">
+  <div class="status-wrapper" [ngClass]="'status-' + getStatusConfig().color">
+    <ion-icon [name]="getStatusConfig().icon" class="status-icon"></ion-icon>
+    <span class="status-label">{{ getStatusConfig().label }}</span>
+  </div>
+</div>

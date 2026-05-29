@@ -1,0 +1,89 @@
+/**
+ * Estilos para OrderStatusBadgeComponent
+ */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &.badge-small {
+    .status-wrapper {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    .status-icon {
+      font-size: 14px;
+      margin-right: 4px;
+    }
+  }
+
+  &.badge-medium {
+    .status-wrapper {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    .status-icon {
+      font-size: 16px;
+      margin-right: 6px;
+    }
+  }
+
+  &.badge-large {
+    .status-wrapper {
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .status-icon {
+      font-size: 18px;
+      margin-right: 8px;
+    }
+  }
+}
+
+.status-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  // Cores por status
+  &[color='primary'] {
+    background-color: rgba(var(--primary-rgb), 0.1);
+    color: var(--primary);
+  }
+
+  &[color='warning'] {
+    background-color: rgba(var(--warning-rgb), 0.1);
+    color: var(--warning);
+  }
+
+  &[color='secondary'] {
+    background-color: rgba(var(--secondary-rgb), 0.1);
+    color: var(--secondary);
+  }
+
+  &[color='success'] {
+    background-color: rgba(var(--success-rgb), 0.1);
+    color: var(--success);
+  }
+}
+
+.status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-label {
+  margin: 0;
+}

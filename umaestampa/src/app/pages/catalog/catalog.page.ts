@@ -10,11 +10,13 @@ import {
   IonHeader,
   IonIcon,
   IonToolbar,
+  ModalController,
   PopoverController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { brushOutline, cartOutline, colorPaletteOutline, personOutline } from 'ionicons/icons';
+import { brushOutline, cartOutline, colorPaletteOutline, helpCircleOutline, personOutline } from 'ionicons/icons';
 import { AuthPopupComponent } from '../../components/auth-popup.component';
+import { HelpModalComponent } from '../../components/help-modal.component';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { Product, ProductsService } from '../../services/products.service';
@@ -44,6 +46,7 @@ import { Product, ProductsService } from '../../services/products.service';
     IonHeader,
     IonIcon,
     IonToolbar,
+    HelpModalComponent,
   ],
 })
 export class CatalogPage {
@@ -52,6 +55,7 @@ export class CatalogPage {
   private readonly cartService = inject(CartService);
   private readonly authService = inject(AuthService);
   private readonly popoverCtrl = inject(PopoverController);
+  private readonly modalController = inject(ModalController);
 
   // Expõe o signal de produtos do serviço para o template
   readonly products = this.productsService.products$;
@@ -67,7 +71,7 @@ export class CatalogPage {
    * @constructor
    */
   constructor() {
-    addIcons({ brushOutline, cartOutline, colorPaletteOutline, personOutline });
+    addIcons({ brushOutline, cartOutline, colorPaletteOutline, helpCircleOutline, personOutline });
   }
 
   /**
@@ -92,6 +96,19 @@ export class CatalogPage {
       cssClass: 'auth-popover',
     });
     await popover.present();
+  }
+
+  /**
+   * Abre o modal de ajuda com FAQs e tutoriais
+   * @async
+   * @returns {Promise<void>}
+   */
+  async openHelp(): Promise<void> {
+    const modal = await this.modalController.create({
+      component: HelpModalComponent,
+      cssClass: 'help-modal',
+    });
+    await modal.present();
   }
 }
 

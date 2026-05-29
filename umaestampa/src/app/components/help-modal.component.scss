@@ -1,0 +1,179 @@
+/**
+ * Estilos para HelpModalComponent
+ */
+
+.help-modal-header {
+  --border-bottom: 1px solid var(--border);
+}
+
+.help-modal-content {
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+/* Segment Tabs */
+ion-segment {
+  margin: 16px;
+  --background: transparent;
+}
+
+ion-segment-button {
+  --border-radius: 8px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  --color: var(--text-secondary);
+  --color-checked: var(--primary);
+  --indicator-color: transparent;
+
+  &[aria-selected='true'] {
+    --background: var(--primary);
+    --color: white;
+  }
+}
+
+.tab-content {
+  padding: 0 16px 16px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Search Bar */
+.faq-search {
+  --padding-top: 12px;
+  --padding-bottom: 4px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+}
+
+.search-info {
+  padding: 8px 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* FAQ List */
+.faq-list,
+.tutorials-list {
+  margin: 0;
+  padding: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+}
+
+.faq-item,
+.tutorial-item {
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-padding-start: 0;
+  --inner-padding-end: 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:active,
+  &:hover {
+    --background: var(--card-hover);
+  }
+
+  &.faq-item-selected,
+  &.tutorial-item-selected {
+    --background: var(--primary-light, rgba(var(--primary-rgb), 0.05));
+  }
+}
+
+.faq-item-content,
+.tutorial-item-content {
+  flex: 1;
+  padding: 16px 12px;
+}
+
+.faq-question,
+.tutorial-title {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.faq-answer {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.faq-chevron,
+.tutorial-chevron {
+  transition: transform 0.2s ease;
+  color: var(--text-secondary);
+
+  &.faq-chevron-rotated,
+  &.tutorial-chevron-rotated {
+    transform: rotate(180deg);
+  }
+}
+
+/* Tutorial Steps */
+.tutorial-steps {
+  margin-top: 12px;
+  padding: 12px;
+  background-color: var(--card-hover);
+  border-radius: 8px;
+  border-left: 3px solid var(--primary);
+}
+
+.steps-list {
+  margin: 0;
+  padding-left: 20px;
+  list-style: decimal;
+}
+
+.step-item {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 8px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* No Results */
+.no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+
+  ion-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.4;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
