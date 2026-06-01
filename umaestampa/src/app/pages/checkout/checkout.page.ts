@@ -171,31 +171,24 @@ export class CheckoutPage implements OnInit {
 
   /**
    * Formata o código postal automaticamente com "-" após 4 dígitos
+   * Permite apenas 7 dígitos + 1 "-" (total 8 caracteres)
    * @param value - Valor do código postal
    */
   formatPostalCode(value: string | null | undefined): void {
     if (!value) return;
     
-    // Remove caracteres que não sejam dígitos e "-"
-    const cleaned = value.replace(/[^\d-]/g, '');
+    // Remove tudo exceto dígitos
+    const digitsOnly = value.replace(/\D/g, '');
     
-    // Formata para XXXX-XXX
-    let formatted = '';
-    for (let i = 0; i < cleaned.length && i < 7; i++) {
-      if (i === 4 && cleaned.charAt(i) !== '-') {
-        formatted += '-';
-      }
-      if (cleaned.charAt(i) !== '-' || i !== 4) {
-        formatted += cleaned.charAt(i);
-      }
+    // Limita a 7 dígitos
+    const limitedDigits = digitsOnly.substring(0, 7);
+    
+    // Formata com "-" após 4 dígitos
+    if (limitedDigits.length <= 4) {
+      this.formData.postalCode = limitedDigits;
+    } else {
+      this.formData.postalCode = limitedDigits.substring(0, 4) + '-' + limitedDigits.substring(4);
     }
-    
-    // Se houver mais de 4 dígitos sem "-", adiciona automaticamente
-    if (cleaned.replace(/-/g, '').length === 4 && !formatted.includes('-')) {
-      formatted = cleaned.substring(0, 4) + '-' + cleaned.substring(4);
-    }
-    
-    this.formData.postalCode = formatted;
   }
 
   /**

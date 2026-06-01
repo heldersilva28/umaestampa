@@ -2,6 +2,11 @@
 
 <ion-content>
   <div class="page-shell order-history-shell">
+    <button type="button" class="back-button" routerLink="/catalog">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+      <span>Voltar ao Catálogo</span>
+    </button>
+
     <h1 class="screen-title">Histórico de Encomendas</h1>
 
     <div *ngIf="orders().length === 0" class="empty-orders surface-card">
@@ -46,7 +51,7 @@
         </div>
 
         <div class="order-card-footer">
-          <strong class="price-accent">€{{ order.total.toFixed(2) }}</strong>
+          <strong class="price-accent">€{{ (subtotalByOrder(order) + shippingByOrder(order)).toFixed(2) }}</strong>
           <span>
             Ver detalhes
             <ion-icon name="chevron-forward-outline"></ion-icon>
@@ -113,7 +118,7 @@
         </div>
         <div class="total-line">
           <span>Total</span>
-          <strong class="price-accent">€{{ order.total.toFixed(2) }}</strong>
+          <strong class="price-accent">€{{ (subtotalByOrder(order) + shippingByOrder(order)).toFixed(2) }}</strong>
         </div>
       </div>
     </section>
