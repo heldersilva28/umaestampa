@@ -125,8 +125,9 @@ export class OrdersService {
       return;
     }
 
-    // Adiciona o ID do utilizador à encomenda
+    // Adiciona dados controlados pela app à encomenda
     order.userId = user.id;
+    order.status = 'Em processamento';
 
     this._orders.update((current) => [...current, order]);
     await this.saveOrdersForCurrentUser();

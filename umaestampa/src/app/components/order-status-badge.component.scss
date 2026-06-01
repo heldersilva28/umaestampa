@@ -57,23 +57,23 @@
   transition: all 0.2s ease;
 
   // Cores por status
-  &[color='primary'] {
+  &.status-primary {
     background-color: rgba(var(--primary-rgb), 0.1);
     color: var(--primary);
   }
 
-  &[color='warning'] {
-    background-color: rgba(var(--warning-rgb), 0.1);
-    color: var(--warning);
+  &.status-warning {
+    background-color: rgba(152, 16, 250, 0.1);
+    color: var(--brand-accent);
   }
 
-  &[color='secondary'] {
+  &.status-secondary {
     background-color: rgba(var(--secondary-rgb), 0.1);
     color: var(--secondary);
   }
 
-  &[color='success'] {
-    background-color: rgba(var(--success-rgb), 0.1);
+  &.status-success {
+    background-color: rgba(0, 166, 62, 0.1);
     color: var(--success);
   }
 }

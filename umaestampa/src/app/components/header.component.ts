@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { IonBadge, IonButton, IonHeader, IonIcon, IonToolbar, PopoverController } from '@ionic/angular/standalone';
+import { IonBadge, IonButton, IonHeader, IonIcon, IonToolbar, ModalController, PopoverController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { cartOutline, colorPaletteOutline, personOutline } from 'ionicons/icons';
+import { cartOutline, colorPaletteOutline, helpCircleOutline, personOutline } from 'ionicons/icons';
 import { AuthPopupComponent } from './auth-popup.component';
+import { HelpModalComponent } from './help-modal.component';
 import { AuthService } from '../services/auth.service';
 import { CartService } from '../services/cart.service';
 
@@ -39,6 +40,13 @@ import { CartService } from '../services/cart.service';
             <ion-badge *ngIf="cartCount() > 0" class="cart-count-badge">{{ cartCount() }}</ion-badge>
           </div>
 
+          <!-- Ajuda -->
+          <div class="relative shrink-0">
+            <ion-button fill="solid" (click)="openHelp()" aria-label="Abrir ajuda" class="nav-icon-button dark">
+              <ion-icon name="help-circle-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </div>
+
           <!-- Botão de autenticação -->
           <ion-button
             fill="solid"
@@ -60,6 +68,7 @@ export class HeaderComponent {
   private readonly cartService = inject(CartService);
   private readonly authService = inject(AuthService);
   private readonly popoverCtrl = inject(PopoverController);
+  private readonly modalController = inject(ModalController);
 
   // Signal do número de itens no carrinho
   readonly cartCount = this.cartService.count;
@@ -72,7 +81,7 @@ export class HeaderComponent {
    * @constructor
    */
   constructor() {
-    addIcons({ cartOutline, colorPaletteOutline, personOutline });
+    addIcons({ cartOutline, colorPaletteOutline, helpCircleOutline, personOutline });
   }
 
   /**
@@ -89,5 +98,18 @@ export class HeaderComponent {
       cssClass: 'auth-popover',
     });
     await popover.present();
+  }
+
+  /**
+   * Abre o modal de ajuda com FAQs e tutoriais
+   * @async
+   * @returns {Promise<void>}
+   */
+  async openHelp(): Promise<void> {
+    const modal = await this.modalController.create({
+      component: HelpModalComponent,
+      cssClass: 'help-modal',
+    });
+    await modal.present();
   }
 }

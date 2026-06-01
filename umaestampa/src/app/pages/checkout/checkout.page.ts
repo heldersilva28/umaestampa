@@ -3,10 +3,8 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import {
-  IonBadge,
   IonButton,
   IonContent,
-  IonHeader,
   IonIcon,
   IonInput,
   IonItem,
@@ -15,28 +13,24 @@ import {
   IonRadioGroup,
   IonSpinner,
   IonTextarea,
-  IonToolbar,
-  ModalController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   arrowBackOutline,
   businessOutline,
   cardOutline,
-  cartOutline,
   checkmarkCircle,
-  colorPaletteOutline,
-  helpCircleOutline,
-  personOutline,
   phonePortraitOutline,
 } from 'ionicons/icons';
+import { HeaderComponent } from '../../components/header.component';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { OrdersService, Order } from '../../services/orders.service';
 import { ToastService } from '../../services/toast.service';
 import { ValidationService } from '../../services/validation.service';
 import { TooltipDirective } from '../../directives/tooltip.directive';
-import { HelpModalComponent } from '../../components/help-modal.component';
+
+type CheckoutStep = 1 | 2 | 3;
 
 /**
  * Página de Checkout
@@ -57,10 +51,9 @@ import { HelpModalComponent } from '../../components/help-modal.component';
     CommonModule,
     FormsModule,
     RouterLink,
-    IonBadge,
+    HeaderComponent,
     IonButton,
     IonContent,
-    IonHeader,
     IonIcon,
     IonInput,
     IonItem,
@@ -69,7 +62,6 @@ import { HelpModalComponent } from '../../components/help-modal.component';
     IonRadioGroup,
     IonSpinner,
     IonTextarea,
-    IonToolbar,
     TooltipDirective,
   ],
 })
@@ -80,17 +72,18 @@ export class CheckoutPage implements OnInit {
   private readonly toastService = inject(ToastService);
   private readonly validationService = inject(ValidationService);
   private readonly authService = inject(AuthService);
-  private readonly modalController = inject(ModalController);
 
   // Itens do carrinho
   readonly items = this.cartService.items;
-  readonly cartCount = this.cartService.count;
   readonly subtotal = this.cartService.subtotal;
 
-  // Envio gratuito no checkout
-  readonly shipping = computed(() => 0);
+  // Envio: €4.99 por defeito, grátis acima de €50
+  readonly shipping = computed(() => {
+    const subtotalValue = this.subtotal();
+    return subtotalValue >= 50 ? 0 : 4.99;
+  });
 
-  // Total = subtotal + envio (neste caso, subtotal)
+  // Total = subtotal + envio
   readonly total = computed(() => (this.items().length === 0 ? 0 : this.subtotal() + this.shipping()));
 
   // Flag: indica se o pedido foi colocado com sucesso
@@ -104,6 +97,15 @@ export class CheckoutPage implements OnInit {
 
   // Erros de validação por campo
   errors = signal<Record<string, string>>({});
+
+  // Passo atual do checkout: 1 dados, 2 pagamento, 3 resumo
+  currentStep = signal<CheckoutStep>(1);
+
+  readonly checkoutSteps: Array<{ value: CheckoutStep; label: string }> = [
+    { value: 1, label: 'Dados' },
+    { value: 2, label: 'Pagamento' },
+    { value: 3, label: 'Resumo' },
+  ];
 
   /**
    * Dados de formulário para checkout
@@ -136,11 +138,7 @@ export class CheckoutPage implements OnInit {
       arrowBackOutline,
       businessOutline,
       cardOutline,
-      cartOutline,
       checkmarkCircle,
-      colorPaletteOutline,
-      helpCircleOutline,
-      personOutline,
       phonePortraitOutline,
     });
   }
@@ -163,6 +161,51 @@ export class CheckoutPage implements OnInit {
     if (user) {
       this.formData.name = user.name;
       this.formData.email = user.email;
+    }
+    
+    // Inicializa com prefixo +351 se não tiver telefone
+    if (!this.formData.phone) {
+      this.formData.phone = '+351';
+    }
+  }
+
+  /**
+   * Formata o código postal automaticamente com "-" após 4 dígitos
+   * @param value - Valor do código postal
+   */
+  formatPostalCode(value: string | null | undefined): void {
+    if (!value) return;
+    
+    // Remove caracteres que não sejam dígitos e "-"
+    const cleaned = value.replace(/[^\d-]/g, '');
+    
+    // Formata para XXXX-XXX
+    let formatted = '';
+    for (let i = 0; i < cleaned.length && i < 7; i++) {
+      if (i === 4 && cleaned.charAt(i) !== '-') {
+        formatted += '-';
+      }
+      if (cleaned.charAt(i) !== '-' || i !== 4) {
+        formatted += cleaned.charAt(i);
+      }
+    }
+    
+    // Se houver mais de 4 dígitos sem "-", adiciona automaticamente
+    if (cleaned.replace(/-/g, '').length === 4 && !formatted.includes('-')) {
+      formatted = cleaned.substring(0, 4) + '-' + cleaned.substring(4);
+    }
+    
+    this.formData.postalCode = formatted;
+  }
+
+  /**
+   * Formata o telefone mantendo apenas o prefixo +351
+   * @param value - Valor do telefone
+   */
+  formatPhone(value: string | null | undefined): void {
+    if (!value) return;
+    if (!value.startsWith('+351')) {
+      this.formData.phone = '+351' + value.replace(/[^\d]/g, '');
     }
   }
 
@@ -216,6 +259,100 @@ export class CheckoutPage implements OnInit {
   }
 
   /**
+   * Avança no checkout, validando os dados obrigatórios no primeiro passo
+   * @returns {Promise<void>}
+   */
+  async nextStep(): Promise<void> {
+    if (this.currentStep() === 1 && !this.validateCustomerAndAddress()) {
+      await this.toastService.error('Preencha corretamente os dados de contacto e morada.');
+      return;
+    }
+
+    if (this.currentStep() === 1) {
+      this.currentStep.set(2);
+      return;
+    }
+
+    if (this.currentStep() === 2) {
+      this.currentStep.set(3);
+    }
+  }
+
+  /**
+   * Volta um passo no checkout
+   * @returns {void}
+   */
+  previousStep(): void {
+    if (this.currentStep() === 3) {
+      this.currentStep.set(2);
+      return;
+    }
+
+    if (this.currentStep() === 2) {
+      this.currentStep.set(1);
+    }
+  }
+
+  /**
+   * Permite navegar para passos anteriores ou para o próximo passo validável
+   * @param step Passo pretendido
+   * @returns {Promise<void>}
+   */
+  async goToStep(step: CheckoutStep): Promise<void> {
+    if (step === this.currentStep()) {
+      return;
+    }
+
+    if (step < this.currentStep()) {
+      this.currentStep.set(step);
+      return;
+    }
+
+    if (step > (this.currentStep() + 1)) {
+      return;
+    }
+
+    if (step === 2) {
+      await this.nextStep();
+      return;
+    }
+
+    if (step === 3) {
+      this.currentStep.set(3);
+    }
+  }
+
+  /**
+   * Indica se um passo já foi completado para estilização da barra
+   * @param step Passo do checkout
+   * @returns true se o passo já ficou para trás
+   */
+  isStepComplete(step: CheckoutStep): boolean {
+    return step < this.currentStep();
+  }
+
+  /**
+   * Texto legível do método de pagamento selecionado
+   * @returns Nome do método de pagamento
+   */
+  paymentMethodLabel(): string {
+    switch (this.formData.paymentMethod) {
+      case 'mbway':
+        return 'MB WAY';
+      case 'transfer':
+        return 'Transferência Bancária';
+      default:
+        return 'Cartão de Crédito/Débito';
+    }
+  }
+
+  private validateCustomerAndAddress(): boolean {
+    const validation = this.validationService.validateCheckoutForm(this.formData);
+    this.errors.set(validation.errors);
+    return validation.isValid;
+  }
+
+  /**
    * Processa o pedido
    * Valida o formulário, simula o processamento e gera um ID de pedido
    * Guarda o pedido no histórico de encomendas
@@ -229,15 +366,15 @@ export class CheckoutPage implements OnInit {
         return;
       }
 
-      // Validar formulário completo
-      const validation = this.validationService.validateCheckoutForm(this.formData);
-      if (!validation.isValid) {
-        this.errors.set(validation.errors);
+      if (!this.validateCustomerAndAddress()) {
         await this.toastService.error(
-          `Preencha corretamente os campos assinalados. ${Object.values(validation.errors)[0]}`
+          `Preencha corretamente os campos assinalados. ${Object.values(this.errors())[0]}`
         );
+        this.currentStep.set(1);
         return;
       }
+
+      this.currentStep.set(3);
 
       this.isLoading.set(true);
 
@@ -253,7 +390,7 @@ export class CheckoutPage implements OnInit {
         userId: this.authService.user?.id || '',
         date: new Date(),
         total: this.total(),
-        status: 'Pendente',
+        status: 'Em processamento',
         name: this.formData.name,
         email: this.formData.email,
         phone: this.formData.phone,
@@ -284,19 +421,6 @@ export class CheckoutPage implements OnInit {
     } finally {
       this.isLoading.set(false);
     }
-  }
-
-  /**
-   * Abre o modal de ajuda
-   * @async
-   * @returns {Promise<void>}
-   */
-  async openHelp(): Promise<void> {
-    const modal = await this.modalController.create({
-      component: HelpModalComponent,
-      cssClass: 'help-modal',
-    });
-    await modal.present();
   }
 
   /**

@@ -3,24 +3,17 @@ import { Component, ElementRef, OnInit, ViewChild, inject, signal } from '@angul
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
-  IonBackButton,
   IonButton,
-  IonButtons,
   IonContent,
-  IonHeader,
   IonIcon,
   IonLabel,
   IonRange,
   IonSpinner,
-  IonTitle,
-  IonToolbar,
-  ModalController,
-  IonBadge
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { add, cartOutline, cloudUploadOutline, colorPaletteOutline, helpCircleOutline, personOutline, refreshOutline, remove } from 'ionicons/icons';
+import { add, cartOutline, cloudUploadOutline, refreshOutline, remove } from 'ionicons/icons';
+import { HeaderComponent } from '../../components/header.component';
 import { CartService } from '../../services/cart.service';
-import { HelpModalComponent } from '../../components/help-modal.component';
 import { Product, ProductsService } from '../../services/products.service';
 import { ToastService } from '../../services/toast.service';
 import { ValidationService } from '../../services/validation.service';
@@ -44,15 +37,13 @@ import { arrowBackOutline } from 'ionicons/icons';
     CommonModule,
     FormsModule,
     RouterLink,
+    HeaderComponent,
     IonButton,
     IonContent,
-    IonHeader,
     IonIcon,
     IonLabel,
     IonRange,
     IonSpinner,
-    IonToolbar,
-    IonBadge,
     TooltipDirective,
   ],
 })
@@ -65,10 +56,6 @@ export class CustomizerPage implements OnInit {
   private readonly cartService = inject(CartService);
   private readonly toastService = inject(ToastService);
   private readonly validationService = inject(ValidationService);
-  private readonly modalController = inject(ModalController);
-
-    // Quantidade total de itens
-  readonly cartCount = this.cartService.count;
 
   // Produto atualmente sendo customizado
   product: Product | undefined;
@@ -103,9 +90,6 @@ constructor() {
     add,
     cartOutline,
     cloudUploadOutline,
-    colorPaletteOutline,
-    helpCircleOutline,
-    personOutline,
     refreshOutline,
     remove,
     arrowBackOutline
@@ -302,16 +286,4 @@ constructor() {
     };
   }
 
-  /**
-   * Abre o modal de ajuda com FAQs e tutoriais
-   * @async
-   * @returns {Promise<void>}
-   */
-  async openHelp(): Promise<void> {
-    const modal = await this.modalController.create({
-      component: HelpModalComponent,
-      cssClass: 'help-modal',
-    });
-    await modal.present();
-  }
 }

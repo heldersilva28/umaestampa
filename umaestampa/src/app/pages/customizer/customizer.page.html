@@ -1,35 +1,4 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar class="shop-header">
-    <div class="shop-header-inner">
-      <div class="brand-lockup">
-        <div class="brand-mark">
-          <ion-icon name="color-palette-outline"></ion-icon>
-        </div>
-        <div class="min-w-0">
-          <p class="brand-title">UmaEstampa</p>
-          <p class="brand-subtitle">Personalize os seus artigos</p>
-        </div>
-      </div>
-
-      <div class="relative shrink-0">
-        <ion-button fill="solid" routerLink="/cart" aria-label="Abrir carrinho" class="nav-icon-button light">
-          <ion-icon name="cart-outline" slot="icon-only"></ion-icon>
-        </ion-button>
-        <ion-badge *ngIf="cartCount() > 0" class="cart-count-badge">{{ cartCount() }}</ion-badge>
-      </div>
-
-      <div class="relative shrink-0">
-        <ion-button fill="solid" (click)="openHelp()" aria-label="Abrir ajuda" class="nav-icon-button dark">
-          <ion-icon name="help-circle-outline" slot="icon-only"></ion-icon>
-        </ion-button>
-      </div>
-
-      <ion-button fill="solid" routerLink="/auth" aria-label="Abrir conta" class="nav-icon-button dark">
-        <ion-icon name="person-outline" slot="icon-only"></ion-icon>
-      </ion-button>
-    </div>
-  </ion-toolbar>
-</ion-header>
+<app-header></app-header>
 
 <ion-content *ngIf="product as selectedProduct">
   
@@ -145,8 +114,7 @@
 
       <ion-button
         expand="block"
-        class="mt-6"
-        class="primary-action"
+        class="primary-action mt-6"
         [disabled]="!uploadedImage || isLoading()"
         (click)="addToCart()"
       >

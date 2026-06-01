@@ -12,7 +12,7 @@ import {
 /**
  * Tipo de status de encomenda
  */
-export type OrderStatus = 'Pendente' | 'Em produção' | 'Enviado' | 'Entregue' | string;
+export type OrderStatus = 'Em processamento' | 'Pendente' | 'Em produção' | 'Enviado' | 'Entregue' | string;
 
 /**
  * Configuração de status (cor, ícone, label)
@@ -27,7 +27,7 @@ interface StatusConfig {
  * Componente para exibir estado de encomenda
  *
  * Mostra um badge com cor e ícone de acordo com o estado da encomenda.
- * Suporta estados: Pendente, Em produção, Enviado, Entregue
+ * Suporta estados: Em processamento, Pendente, Em produção, Enviado, Entregue
  *
  * @component
  * @example
@@ -70,6 +70,11 @@ export class OrderStatusBadgeComponent {
         icon: 'timer-outline',
         label: 'Pendente',
       },
+      'Em processamento': {
+        color: 'warning',
+        icon: 'timer-outline',
+        label: 'Em processamento',
+      },
       'Em produção': {
         color: 'warning',
         icon: 'construct',
@@ -87,7 +92,7 @@ export class OrderStatusBadgeComponent {
       },
     };
 
-    return configs[this.status()] || configs['Pendente'];
+    return configs[this.status()] || configs['Em processamento'];
   }
 
   /**

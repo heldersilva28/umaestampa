@@ -1,33 +1,4 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar class="shop-header">
-    <div class="shop-header-inner">
-      <div class="brand-lockup">
-        <div class="brand-mark">
-          <ion-icon name="color-palette-outline"></ion-icon>
-        </div>
-        <div class="min-w-0">
-          <p class="brand-title">UmaEstampa</p>
-          <p class="brand-subtitle">Personalize os seus artigos</p>
-        </div>
-      </div>
-
-      <div class="relative shrink-0">
-        <ion-button fill="solid" routerLink="/cart" aria-label="Abrir carrinho" class="nav-icon-button light">
-          <ion-icon name="cart-outline" slot="icon-only"></ion-icon>
-        </ion-button>
-        <ion-badge *ngIf="cartCount() > 0" class="cart-count-badge">{{ cartCount() }}</ion-badge>
-      </div>
-
-      <ion-button fill="solid" (click)="openHelp()" aria-label="Abrir ajuda" class="nav-icon-button dark">
-        <ion-icon name="help-circle-outline" slot="icon-only"></ion-icon>
-      </ion-button>
-
-      <ion-button fill="solid" routerLink="/auth" aria-label="Abrir conta" class="nav-icon-button dark">
-        <ion-icon name="person-outline" slot="icon-only"></ion-icon>
-      </ion-button>
-    </div>
-  </ion-toolbar>
-</ion-header>
+<app-header></app-header>
 
 <ion-content>
   <div *ngIf="orderPlaced" class="page-shell confirmation-shell text-center">
@@ -53,191 +24,256 @@
 
     <h1 class="screen-title">Finalizar Encomenda</h1>
 
-    <section class="surface-card checkout-section">
-      <h2>Informações de Contacto</h2>
-      <p class="section-copy">Preencha os seus dados para receber a encomenda</p>
+    <nav class="checkout-stepper" aria-label="Progresso do checkout">
+      <button
+        *ngFor="let step of checkoutSteps; let last = last"
+        type="button"
+        class="stepper-item"
+        [class.active]="currentStep() === step.value"
+        [class.complete]="isStepComplete(step.value)"
+        (click)="goToStep(step.value)"
+      >
+        <span class="stepper-number">{{ step.value }}</span>
+        <span class="stepper-label">{{ step.label }}</span>
+        <span *ngIf="!last" class="stepper-line"></span>
+      </button>
+    </nav>
 
-      <div class="field-stack">
-        <label>
-          <span>Nome Completo *</span>
-          <ion-item lines="none" class="form-field" [class.field-error]="errors()['name']">
-            <ion-input
-              type="text"
-              placeholder="João Silva"
-              [(ngModel)]="formData.name"
-              (ionBlur)="validateField('name')"
-              appTooltip="Insira o seu nome completo para validação de entrega"
-            ></ion-input>
-          </ion-item>
-          <span *ngIf="errors()['name']" class="error-message">{{ errors()['name'] }}</span>
-        </label>
+    <div *ngIf="currentStep() === 1" class="checkout-step-content">
+      <section class="surface-card checkout-section">
+        <h2>Informações de Contacto</h2>
+        <p class="section-copy">Preencha os seus dados para receber a encomenda.</p>
 
-        <label>
-          <span>Email *</span>
-          <ion-item lines="none" class="form-field" [class.field-error]="errors()['email']">
-            <ion-input
-              type="email"
-              placeholder="joao@exemplo.pt"
-              [(ngModel)]="formData.email"
-              (ionBlur)="validateField('email')"
-              autocomplete="email"
-              appTooltip="Receberá confirmação e rastreio por aqui"
-            ></ion-input>
-          </ion-item>
-          <span *ngIf="errors()['email']" class="error-message">{{ errors()['email'] }}</span>
-        </label>
+        <div class="field-stack">
+          <label>
+            <span>Nome Completo *</span>
+            <ion-item lines="none" class="form-field" [class.field-error]="errors()['name']">
+              <ion-input
+                type="text"
+                placeholder="João Silva"
+                [(ngModel)]="formData.name"
+                (ionBlur)="validateField('name')"
+                appTooltip="Insira o seu nome completo para validação de entrega"
+              ></ion-input>
+            </ion-item>
+            <span *ngIf="errors()['name']" class="error-message">{{ errors()['name'] }}</span>
+          </label>
 
-        <label>
-          <span>Telefone *</span>
-          <ion-item lines="none" class="form-field" [class.field-error]="errors()['phone']">
-            <ion-input
-              type="tel"
-              placeholder="+351 912 345 678"
-              [(ngModel)]="formData.phone"
-              (ionBlur)="validateField('phone')"
-              autocomplete="tel"
-              appTooltip="Formato: +351 XXX XXX XXX ou +351 9XXXXXXXX"
-            ></ion-input>
-          </ion-item>
-          <span *ngIf="errors()['phone']" class="error-message">{{ errors()['phone'] }}</span>
-        </label>
-      </div>
-    </section>
+          <label>
+            <span>Email *</span>
+            <ion-item lines="none" class="form-field" [class.field-error]="errors()['email']">
+              <ion-input
+                type="email"
+                placeholder="joao@exemplo.pt"
+                [(ngModel)]="formData.email"
+                (ionBlur)="validateField('email')"
+                autocomplete="email"
+                appTooltip="Receberá confirmação e rastreio por aqui"
+              ></ion-input>
+            </ion-item>
+            <span *ngIf="errors()['email']" class="error-message">{{ errors()['email'] }}</span>
+          </label>
 
-    <section class="surface-card checkout-section">
-      <h2>Morada de Entrega</h2>
-
-      <div class="field-stack">
-        <label>
-          <span>Morada *</span>
-          <ion-item lines="none" class="form-field" [class.field-error]="errors()['address']">
-            <ion-input
-              type="text"
-              placeholder="Rua Exemplo, nº 123"
-              [(ngModel)]="formData.address"
-              (ionBlur)="validateField('address')"
-              appTooltip="Rua/Avenida, número e complementos (prédio, andar, etc)"
-            ></ion-input>
-          </ion-item>
-          <span *ngIf="errors()['address']" class="error-message">{{ errors()['address'] }}</span>
-        </label>
-
-        <label>
-          <span>Cidade *</span>
-          <ion-item lines="none" class="form-field" [class.field-error]="errors()['city']">
-            <ion-input
-              type="text"
-              placeholder="Lisboa"
-              [(ngModel)]="formData.city"
-              (ionBlur)="validateField('city')"
-              appTooltip="Cidade ou localidade de entrega"
-            ></ion-input>
-          </ion-item>
-          <span *ngIf="errors()['city']" class="error-message">{{ errors()['city'] }}</span>
-        </label>
-
-        <label>
-          <span>Código Postal *</span>
-          <ion-item lines="none" class="form-field" [class.field-error]="errors()['postalCode']">
-            <ion-input
-              type="text"
-              placeholder="1000-001"
-              [(ngModel)]="formData.postalCode"
-              (ionBlur)="validateField('postalCode')"
-              appTooltip="Formato português: XXXX-XXX (ex: 1000-001)"
-            ></ion-input>
-          </ion-item>
-          <span *ngIf="errors()['postalCode']" class="error-message">{{ errors()['postalCode'] }}</span>
-        </label>
-
-        <label>
-          <span>Notas (opcional)</span>
-          <ion-item lines="none" class="form-field textarea-field">
-            <ion-textarea
-              placeholder="Instruções especiais de entrega"
-              [(ngModel)]="formData.notes"
-              autoGrow="true"
-              appTooltip="Ex: 'Deixar no armazém', 'Toque à campainha 2', etc"
-            ></ion-textarea>
-          </ion-item>
-        </label>
-      </div>
-    </section>
-
-    <section class="surface-card checkout-section">
-      <h2>Método de Pagamento</h2>
-      <p class="section-copy">Selecione como pretende pagar a sua encomenda</p>
-
-      <ion-radio-group [(ngModel)]="formData.paymentMethod" class="payment-options">
-        <ion-item lines="none" class="payment-option">
-          <ion-radio slot="start" value="card"></ion-radio>
-          <ion-icon name="card-outline" slot="start"></ion-icon>
-          <ion-label>
-            <strong>Cartão de Crédito/Débito</strong>
-            <span>Visa, Mastercard, American Express</span>
-          </ion-label>
-        </ion-item>
-
-        <ion-item lines="none" class="payment-option">
-          <ion-radio slot="start" value="mbway"></ion-radio>
-          <ion-icon name="phone-portrait-outline" slot="start"></ion-icon>
-          <ion-label>
-            <strong>MB WAY</strong>
-            <span>Pagamento instantâneo por telemóvel</span>
-          </ion-label>
-        </ion-item>
-
-        <ion-item lines="none" class="payment-option">
-          <ion-radio slot="start" value="transfer"></ion-radio>
-          <ion-icon name="business-outline" slot="start"></ion-icon>
-          <ion-label>
-            <strong>Transferência Bancária</strong>
-            <span>Receberá os dados por email</span>
-          </ion-label>
-        </ion-item>
-      </ion-radio-group>
-    </section>
-
-    <ion-button
-      expand="block"
-      class="primary-action confirm-order-button"
-      [disabled]="isLoading() || !isFormValid()"
-      (click)="placeOrder()"
-    >
-      <ion-spinner *ngIf="isLoading()" name="crescent" slot="start"></ion-spinner>
-      {{ isLoading() ? 'A processar...' : 'Confirmar Encomenda' }}
-    </ion-button>
-
-    <section class="surface-card checkout-summary-card">
-      <h2>Resumo da Encomenda</h2>
-
-      <div *ngIf="items().length === 0" class="empty-summary muted-copy">
-        O carrinho está vazio.
-      </div>
-
-      <div *ngFor="let item of items()" class="checkout-summary-item">
-        <img [src]="item.product.image" [alt]="item.product.name" />
-        <div>
-          <h3>{{ item.product.name }}</h3>
-          <p>Qtd: {{ item.quantity }}</p>
-          <strong class="price-accent">€{{ (item.product.price * item.quantity).toFixed(2) }}</strong>
+          <label>
+            <span>Telefone *</span>
+            <ion-item lines="none" class="form-field" [class.field-error]="errors()['phone']">
+              <ion-input
+                type="tel"
+                placeholder="+351 912 345 678"
+                [(ngModel)]="formData.phone"
+                (ionChange)="formatPhone($event.detail.value)"
+                (ionBlur)="validateField('phone')"
+                autocomplete="tel"
+                appTooltip="Formato: +351 XXX XXX XXX ou +351 9XXXXXXXX"
+              ></ion-input>
+            </ion-item>
+            <span *ngIf="errors()['phone']" class="error-message">{{ errors()['phone'] }}</span>
+          </label>
         </div>
-      </div>
+      </section>
 
-      <div class="checkout-summary-totals">
-        <div>
-          <span>Subtotal</span>
-          <strong>€{{ subtotal().toFixed(2) }}</strong>
+      <section class="surface-card checkout-section">
+        <h2>Morada de Entrega</h2>
+
+        <div class="field-stack">
+          <label>
+            <span>Morada *</span>
+            <ion-item lines="none" class="form-field" [class.field-error]="errors()['address']">
+              <ion-input
+                type="text"
+                placeholder="Rua Exemplo, nº 123"
+                [(ngModel)]="formData.address"
+                (ionBlur)="validateField('address')"
+                appTooltip="Rua/Avenida, número e complementos (prédio, andar, etc)"
+              ></ion-input>
+            </ion-item>
+            <span *ngIf="errors()['address']" class="error-message">{{ errors()['address'] }}</span>
+          </label>
+
+          <label>
+            <span>Cidade *</span>
+            <ion-item lines="none" class="form-field" [class.field-error]="errors()['city']">
+              <ion-input
+                type="text"
+                placeholder="Lisboa"
+                [(ngModel)]="formData.city"
+                (ionBlur)="validateField('city')"
+                appTooltip="Cidade ou localidade de entrega"
+              ></ion-input>
+            </ion-item>
+            <span *ngIf="errors()['city']" class="error-message">{{ errors()['city'] }}</span>
+          </label>
+
+          <label>
+            <span>Código Postal *</span>
+            <ion-item lines="none" class="form-field" [class.field-error]="errors()['postalCode']">
+              <ion-input
+                type="text"
+                placeholder="1000-001"
+                [(ngModel)]="formData.postalCode"
+                (ionChange)="formatPostalCode($event.detail.value)"
+                (ionBlur)="validateField('postalCode')"
+                appTooltip="Formato português: XXXX-XXX (ex: 1000-001)"
+              ></ion-input>
+            </ion-item>
+            <span *ngIf="errors()['postalCode']" class="error-message">{{ errors()['postalCode'] }}</span>
+          </label>
+
+          <label>
+            <span>Notas (opcional)</span>
+            <ion-item lines="none" class="form-field textarea-field">
+              <ion-textarea
+                placeholder="Instruções especiais de entrega"
+                [(ngModel)]="formData.notes"
+                autoGrow="true"
+                appTooltip="Ex: 'Deixar no armazém', 'Toque à campainha 2', etc"
+              ></ion-textarea>
+            </ion-item>
+          </label>
         </div>
-        <div>
-          <span>Envio</span>
-          <strong class="success-text">Grátis</strong>
-        </div>
-        <div class="total-line">
-          <span>Total</span>
-          <strong class="price-accent">€{{ total().toFixed(2) }}</strong>
-        </div>
+      </section>
+
+      <div class="checkout-actions single">
+        <ion-button expand="block" class="primary-action" (click)="nextStep()">
+          Continuar para Pagamento
+        </ion-button>
       </div>
-    </section>
+    </div>
+
+    <div *ngIf="currentStep() === 2" class="checkout-step-content">
+      <section class="surface-card checkout-section">
+        <h2>Método de Pagamento</h2>
+        <p class="section-copy">Selecione como pretende pagar a sua encomenda.</p>
+
+        <ion-radio-group [(ngModel)]="formData.paymentMethod" class="payment-options">
+          <ion-item lines="none" class="payment-option">
+            <ion-radio slot="start" value="card"></ion-radio>
+            <ion-icon name="card-outline" slot="start"></ion-icon>
+            <ion-label>
+              <strong>Cartão de Crédito/Débito</strong>
+              <span>Visa, Mastercard, American Express</span>
+            </ion-label>
+          </ion-item>
+
+          <ion-item lines="none" class="payment-option">
+            <ion-radio slot="start" value="mbway"></ion-radio>
+            <ion-icon name="phone-portrait-outline" slot="start"></ion-icon>
+            <ion-label>
+              <strong>MB WAY</strong>
+              <span>Pagamento instantâneo por telemóvel</span>
+            </ion-label>
+          </ion-item>
+
+          <ion-item lines="none" class="payment-option">
+            <ion-radio slot="start" value="transfer"></ion-radio>
+            <ion-icon name="business-outline" slot="start"></ion-icon>
+            <ion-label>
+              <strong>Transferência Bancária</strong>
+              <span>Receberá os dados por email</span>
+            </ion-label>
+          </ion-item>
+        </ion-radio-group>
+      </section>
+
+      <div class="checkout-actions">
+        <ion-button expand="block" fill="outline" class="secondary-action" (click)="previousStep()">
+          Voltar
+        </ion-button>
+        <ion-button expand="block" class="primary-action" (click)="nextStep()">
+          Continuar para Resumo
+        </ion-button>
+      </div>
+    </div>
+
+    <div *ngIf="currentStep() === 3" class="checkout-step-content">
+      <section class="surface-card checkout-summary-card">
+        <h2>Resumo Global da Encomenda</h2>
+
+        <div class="review-grid">
+          <div class="review-block">
+            <h3>Contacto</h3>
+            <p>{{ formData.name }}</p>
+            <p>{{ formData.email }}</p>
+            <p>{{ formData.phone }}</p>
+          </div>
+
+          <div class="review-block">
+            <h3>Entrega</h3>
+            <p>{{ formData.address }}</p>
+            <p>{{ formData.postalCode }} {{ formData.city }}</p>
+            <p *ngIf="formData.notes">{{ formData.notes }}</p>
+          </div>
+
+          <div class="review-block">
+            <h3>Pagamento</h3>
+            <p>{{ paymentMethodLabel() }}</p>
+          </div>
+        </div>
+
+        <div *ngIf="items().length === 0" class="empty-summary muted-copy">
+          O carrinho está vazio.
+        </div>
+
+        <div *ngFor="let item of items()" class="checkout-summary-item">
+          <img [src]="item.product.image" [alt]="item.product.name" />
+          <div>
+            <h3>{{ item.product.name }}</h3>
+            <p>Qtd: {{ item.quantity }}</p>
+            <strong class="price-accent">€{{ (item.product.price * item.quantity).toFixed(2) }}</strong>
+          </div>
+        </div>
+
+        <div class="checkout-summary-totals">
+          <div>
+            <span>Subtotal</span>
+            <strong>€{{ subtotal().toFixed(2) }}</strong>
+          </div>
+          <div>
+            <span>Envio</span>
+            <strong *ngIf="shipping() === 0" class="success-text">Grátis</strong>
+            <strong *ngIf="shipping() > 0" class="price-accent">€{{ shipping().toFixed(2) }}</strong>
+          </div>
+          <div class="total-line">
+            <span>Total</span>
+            <strong class="price-accent">€{{ total().toFixed(2) }}</strong>
+          </div>
+        </div>
+      </section>
+
+      <div class="checkout-actions">
+        <ion-button expand="block" fill="outline" class="secondary-action" (click)="previousStep()">
+          Voltar
+        </ion-button>
+        <ion-button
+          expand="block"
+          class="primary-action"
+          [disabled]="isLoading() || items().length === 0"
+          (click)="placeOrder()"
+        >
+          <ion-spinner *ngIf="isLoading()" name="crescent" slot="start"></ion-spinner>
+          {{ isLoading() ? 'A processar...' : 'Confirmar Encomenda' }}
+        </ion-button>
+      </div>
+    </div>
   </div>
 </ion-content>

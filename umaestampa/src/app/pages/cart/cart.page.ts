@@ -3,28 +3,20 @@ import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
   AlertController,
-  IonBadge,
   IonButton,
   IonContent,
-  IonHeader,
   IonIcon,
-  IonToolbar,
-  ModalController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   add,
   arrowForwardOutline,
   bagOutline,
-  cartOutline,
-  colorPaletteOutline,
-  helpCircleOutline,
-  personOutline,
   remove,
   trashOutline,
 } from 'ionicons/icons';
+import { HeaderComponent } from '../../components/header.component';
 import { CartService } from '../../services/cart.service';
-import { HelpModalComponent } from '../../components/help-modal.component';
 import { ToastService } from '../../services/toast.service';
 
 /**
@@ -43,19 +35,16 @@ import { ToastService } from '../../services/toast.service';
   imports: [
     CommonModule,
     RouterLink,
-    IonBadge,
+    HeaderComponent,
     IonButton,
     IonContent,
-    IonHeader,
     IonIcon,
-    IonToolbar,
   ],
 })
 export class CartPage {
   private readonly cartService = inject(CartService);
   private readonly alertController = inject(AlertController);
   private readonly toastService = inject(ToastService);
-  private readonly modalController = inject(ModalController);
 
   // Lista reativa de itens do carrinho
   readonly items = this.cartService.items;
@@ -81,10 +70,6 @@ export class CartPage {
       add,
       arrowForwardOutline,
       bagOutline,
-      cartOutline,
-      colorPaletteOutline,
-      helpCircleOutline,
-      personOutline,
       remove,
       trashOutline,
     });
@@ -136,16 +121,4 @@ export class CartPage {
     await alert.present();
   }
 
-  /**
-   * Abre o modal de ajuda com FAQs e tutoriais
-   * @async
-   * @returns {Promise<void>}
-   */
-  async openHelp(): Promise<void> {
-    const modal = await this.modalController.create({
-      component: HelpModalComponent,
-      cssClass: 'help-modal',
-    });
-    await modal.present();
-  }
 }
