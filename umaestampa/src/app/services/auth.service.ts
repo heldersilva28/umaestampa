@@ -1,124 +1,115 @@
 import { Injectable, signal } from '@angular/core';
+import { JwtService } from './jwt.service';
 import { StorageService } from './storage.service';
 
-/**
- * Interface para representar um utilizador autenticado
- * @interface User
- * @property {string} id - Identificador único do utilizador
- * @property {string} name - Nome do utilizador
- * @property {string} email - Email do utilizador
- */
 export interface User {
   id: string;
   name: string;
   email: string;
 }
 
-/**
- * Chaves para armazenamento local de dados de autenticação
- */
+interface StoredUser {
+  id: string;
+  name: string;
+  email: string;
+  passwordHash: string;
+}
+
 const STORAGE_KEYS = {
-  CURRENT_USER: 'auth:currentUser',
+  JWT_TOKEN: 'auth:jwt',
+  USERS_DB: 'auth:users',
 };
 
-/**
- * Serviço de Autenticação
- * Gerencia o estado de autenticação do utilizador
- * Guarda informações de utilizador em Storage para persistência entre sessões
- * @class AuthService
- */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  // Signal que indica o utilizador atualmente autenticado (ou null se não autenticado)
   private readonly currentUser = signal<User | null>(null);
 
-  /**
-   * Construtor do serviço AuthService
-   * @constructor
-   * @param {StorageService} storageService - Serviço de armazenamento persistente
-   */
-  constructor(private storageService: StorageService) {
-    this.loadUserFromStorage();
+  constructor(
+    private storageService: StorageService,
+    private jwtService: JwtService,
+  ) {
+    this.restoreSession();
   }
 
-  /**
-   * Getter que retorna o utilizador atualmente autenticado
-   * @returns {User | null} Utilizador autenticado ou null
-   */
   get user(): User | null {
     return this.currentUser();
   }
 
-  /**
-   * Getter que retorna se o utilizador está autenticado
-   * @returns {boolean} true se autenticado, false caso contrário
-   */
   get isAuthenticated(): boolean {
     return this.currentUser() !== null;
   }
 
-  /**
-   * Getter que retorna um signal para o template reactivamente
-   * @returns {() => boolean} Função que retorna o estado de autenticação
-   */
   get isAuthenticated$(): () => boolean {
     return () => this.currentUser() !== null;
   }
 
-  /**
-   * Getter que retorna um signal para o template reactivamente
-   * @returns {() => User | null} Função que retorna o utilizador atual
-   */
   get currentUser$(): () => User | null {
     return () => this.currentUser();
   }
 
-  /**
-   * Autentica um utilizador com email e password
-   * Simula uma autenticação bem-sucedida
-   * @async
-   * @param {string} email - Email do utilizador
-   * @param {string} name - Nome do utilizador (para registo)
-   * @returns {Promise<User>} Utilizador autenticado
-   */
-  async login(email: string, name: string = 'Utilizador'): Promise<User> {
-    // Simula autenticação no backend
-    const user: User = {
-      id: `user_${Date.now()}`,
+  async login(email: string, password: string): Promise<User> {
+    const users = await this.getStoredUsers();
+    const stored = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+    if (!stored) {
+      throw new Error('Utilizador não encontrado.');
+    }
+    const hash = await this.jwtService.hashPassword(password);
+    if (hash !== stored.passwordHash) {
+      throw new Error('Password incorreta.');
+    }
+    return this.createSession({ id: stored.id, name: stored.name, email: stored.email });
+  }
+
+  async register(email: string, name: string, password: string): Promise<User> {
+    const users = await this.getStoredUsers();
+    if (users.some((u) => u.email.toLowerCase() === email.toLowerCase())) {
+      throw new Error('Este email já está registado.');
+    }
+    const passwordHash = await this.jwtService.hashPassword(password);
+    const newUser: StoredUser = {
+      id: `user_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
       name,
       email,
+      passwordHash,
     };
+    users.push(newUser);
+    await this.storageService.set(STORAGE_KEYS.USERS_DB, users);
+    return this.createSession({ id: newUser.id, name: newUser.name, email: newUser.email });
+  }
 
+  async logout(): Promise<void> {
+    this.currentUser.set(null);
+    await this.storageService.remove(STORAGE_KEYS.JWT_TOKEN);
+  }
+
+  private async createSession(user: User): Promise<User> {
+    const token = await this.jwtService.sign({ sub: user.id, name: user.name, email: user.email });
+    await this.storageService.set(STORAGE_KEYS.JWT_TOKEN, token);
     this.currentUser.set(user);
-    await this.storageService.set(STORAGE_KEYS.CURRENT_USER, user);
     return user;
   }
 
-  /**
-   * Termina a sessão do utilizador
-   * Remove os dados de autenticação do Storage
-   * @async
-   * @returns {Promise<void>}
-   */
-  async logout(): Promise<void> {
-    this.currentUser.set(null);
-    await this.storageService.remove(STORAGE_KEYS.CURRENT_USER);
+  private async restoreSession(): Promise<void> {
+    try {
+      const token = await this.storageService.get<string>(STORAGE_KEYS.JWT_TOKEN);
+      if (!token) return;
+      const claims = await this.jwtService.verify(token);
+      if (!claims) {
+        await this.storageService.remove(STORAGE_KEYS.JWT_TOKEN);
+        return;
+      }
+      this.currentUser.set({
+        id: claims['sub'] as string,
+        name: claims['name'] as string,
+        email: claims['email'] as string,
+      });
+    } catch {
+      await this.storageService.remove(STORAGE_KEYS.JWT_TOKEN);
+    }
   }
 
-  /**
-   * Carrega o utilizador do Storage (persistência entre sessões)
-   * @private
-   * @async
-   * @returns {Promise<void>}
-   */
-  private async loadUserFromStorage(): Promise<void> {
-    try {
-      const user = await this.storageService.get<User>(STORAGE_KEYS.CURRENT_USER);
-      if (user) {
-        this.currentUser.set(user);
-      }
-    } catch (error) {
-      console.error('Erro ao carregar utilizador do Storage:', error);
-    }
+  private async getStoredUsers(): Promise<StoredUser[]> {
+    const users = await this.storageService.get<StoredUser[]>(STORAGE_KEYS.USERS_DB);
+    return users ?? [];
   }
 }
