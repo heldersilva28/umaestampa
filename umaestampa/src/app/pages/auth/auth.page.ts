@@ -116,13 +116,12 @@ export class AuthPage {
     await this.delay(800);
 
     try {
-      // Extrai o nome do email (parte antes do @)
-      const name = this.loginEmail.split('@')[0];
-      await this.authService.login(this.loginEmail, name);
+      await this.authService.login(this.loginEmail, this.loginPassword);
       await this.showToast('Bem-vindo à UmaEstampa.', 'success');
       this.router.navigate(['/catalog']);
     } catch (error) {
-      await this.showToast('Erro ao fazer login.', 'danger');
+      const msg = error instanceof Error ? error.message : 'Erro ao fazer login.';
+      await this.showToast(msg, 'danger');
     } finally {
       this.isLoading = false;
     }
@@ -149,11 +148,12 @@ export class AuthPage {
     await this.delay(800);
 
     try {
-      await this.authService.login(this.registerEmail, this.registerName);
+      await this.authService.register(this.registerEmail, this.registerName, this.registerPassword);
       await this.showToast('Conta criada com sucesso.', 'success');
       this.router.navigate(['/catalog']);
     } catch (error) {
-      await this.showToast('Erro ao criar conta.', 'danger');
+      const msg = error instanceof Error ? error.message : 'Erro ao criar conta.';
+      await this.showToast(msg, 'danger');
     } finally {
       this.isLoading = false;
     }
