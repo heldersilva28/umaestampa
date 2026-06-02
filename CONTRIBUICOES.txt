@@ -1,0 +1,46 @@
+CONTRIBUIÇÕES E AJUDA EXTERNA - Projeto UmaEstampa
+IHM (Interação Homem-Máquina) 2025/2026 - Etapa 3
+====================================================
+
+ELEMENTOS DO GRUPO
+------------------
+- Helder Silva
+- Bernardo Craveiro
+
+
+DIVISÃO DE TAREFAS
+------------------
+A maioria do trabalho foi realizada em conjunto, no computador do Helder Silva,
+trabalhando os dois em simultâneo no mesmo PC.
+
+A divisão aproximada do projeto foi a seguinte:
+
+  Helder Silva (60%)
+  - Estruturação principal do projeto (routing, serviços, páginas)
+  - Implementação do catálogo de produtos e página de personalização
+  - Implementação da autenticação (login/registo) e gestão de sessão
+  - Configuração do Capacitor e orientação do ecrã
+  - Design e estilos globais (CSS Custom Properties, global.scss)
+  - Implementação do carrinho de compras e checkout
+
+  Bernardo Craveiro (40%)
+  - Apoio no desenvolvimento das páginas e componentes
+  - Testes e validação do funcionamento da app
+  - Contribuição para o design e experiência do utilizador
+  - Estruturação dos ficheiros JSON (produtos e ajuda)
+  - Histórico de encomendas e badges de estado
+
+
+AJUDA EXTERNA
+-------------
+Recebemos ajuda humana de um elemento exterior ao grupo: o irmão do Bernardo Craveiro.
+
+A ajuda prestada foi pontual e incidiu sobre dúvidas relacionadas com:
+- Como guardar os dados do utilizador de forma persistente na app
+  (nomeadamente dados de login/registo e histórico de encomendas)
+- Esclarecimento sobre o uso do Ionic Storage para persistência local
+
+
+
+
+
