@@ -7,79 +7,93 @@
 
 ## Sessão 1 – 18 de maio de 2026
 
-**Elementos presentes:** Bernardo Craveiro, Helder Silva
+**Elementos presentes:** Bernardo Craveiro, Helder Silva  
 
 **Objetivo:**  
-Definição da estrutura da aplicação e início da implementação das páginas principais.
+Definição da estrutura inicial da aplicação e implementação das páginas base.
 
 **Atividades realizadas:**  
 - Bernardo Craveiro: Criação do projeto base em Ionic/Angular e configuração do ambiente de desenvolvimento;  
- - Bernardo Craveiro: Implementação do catálogo de produtos com listagem a partir de ficheiro JSON (com Helder);  
- - Helder Silva: Criação da estrutura de navegação entre páginas (app.routes.ts);  
- - Helder Silva: Implementação do componente de cabeçalho (HeaderComponent) com ligação ao carrinho e à conta do utilizador;  
- - Helder Silva: Configuração do Ionic Storage para persistência de dados no dispositivo.
- - Helder Silva: Implementação do catálogo de produtos (com Bernardo);
+- Bernardo Craveiro e Helder Silva: Implementação conjunta do catálogo de produtos com leitura a partir de ficheiro JSON;  
+- Helder Silva: Criação da estrutura de navegação entre páginas (routing / app.routes.ts);  
+- Helder Silva: Implementação do componente de cabeçalho (HeaderComponent) com ligação ao carrinho e à conta do utilizador;  
+- Helder Silva: Configuração do Ionic Storage para persistência de dados locais;  
+- Helder Silva: Definição da estrutura global de estilos (global.scss e CSS variables).  
 
 **Problemas:**  
-- Os produtos não apareciam na página de catálogo após a primeira renderização.
+- Os produtos não eram corretamente carregados na primeira renderização do catálogo.
 
 **Solução:**  
-- Identificou-se que o serviço de produtos não estava a aguardar a resposta do HttpClient antes de devolver os dados; adicionou-se a subscrição correta ao Observable.
+- Corrigido o fluxo assíncrono do serviço de produtos, garantindo a correta subscrição do Observable do HttpClient.
 
 **Decisões:**  
-- Decidiu-se usar Angular Signals para gestão de estado reativo, em vez de BehaviorSubject, por ser mais simples e alinhado com Angular 20;  
-- Ficou definido que cada produto teria id, nome, preço, categoria, descrição e imagem.
+- Adoção de Angular Signals para gestão de estado, por simplificar a reatividade da aplicação;  
+- Definição da estrutura base dos produtos (id, nome, preço, categoria, descrição e imagem).  
 
 ---
 
 ## Sessão 2 – 25 de maio de 2026
 
-**Elementos presentes:** Bernardo Craveiro, Helder Silva
+**Elementos presentes:** Bernardo Craveiro, Helder Silva  
 
 **Objetivo:**  
-Implementação do personalizador de produtos, do carrinho de compras e do processo de checkout.
+Implementação do personalizador de produtos, carrinho e checkout.
 
 **Atividades realizadas:**  
-- Helder Silva: Implementação da página Customizer com upload de imagem, controlo de posição por drag, slider de escala (20%–200%) e slider de rotação (−180° a +180°);  
-- Helder Silva: Validação do ficheiro de imagem (tipo, tamanho máximo e resolução mínima) antes de permitir a personalização;  
-- Bernardo Craveiro: Implementação do CartService com Angular Signals, operações de adicionar, remover e atualizar quantidade, e cálculo automático do subtotal;  
-- Bernardo Craveiro: Implementação da página de Carrinho com ajuste de quantidades, remoção de itens com confirmação e cálculo de envio (€4,99 ou grátis acima de €50);  
-- Bernardo Craveiro: Implementação do processo de Checkout em 3 passos: dados do cliente, método de pagamento e revisão/confirmação da encomenda.
+- Helder Silva: Implementação da página Customizer com upload de imagem, drag para posicionamento, escala (20%–200%) e rotação (−180° a +180°);  
+- Helder Silva: Validação de imagens (tipo, tamanho e restrições de qualidade antes do upload);  
+- Bernardo Craveiro: Implementação do CartService com Angular Signals (adição, remoção e atualização de quantidades);  
+- Bernardo Craveiro: Implementação da página de carrinho com gestão de quantidades, remoção de itens e cálculo de envio (€4,99 ou grátis acima de €50);  
+- Bernardo Craveiro: Implementação do processo de checkout em 3 etapas (dados pessoais, pagamento e confirmação);  
+- Helder Silva e Bernardo Craveiro: Integração do carrinho com persistência no Ionic Storage.  
 
 **Problemas:**  
-- Ao remover um item do carrinho, o índice dos itens seguintes ficava desfasado, causando remoções incorretas.
+- Remoção de itens do carrinho provocava inconsistências nos índices dos elementos.
 
 **Solução:**  
-- Substituiu-se a lógica de remoção por índice por filtragem com base num identificador único do item.
+- Substituição da lógica baseada em índice por remoção baseada em identificador único do produto/item.
 
 **Decisões:**  
-- Decidiu-se persistir o carrinho no Ionic Storage para que os itens não se percam ao fechar a aplicação;  
-- Optou-se por um processo de checkout em múltiplos passos para melhorar a experiência do utilizador e reduzir erros de preenchimento.
+- Persistência do carrinho no storage para evitar perda de dados;  
+- Adoção de checkout multi-etapas para melhorar usabilidade e reduzir erros.  
 
 ---
 
 ## Sessão 3 – 1 de junho de 2026
 
-**Elementos presentes:** Bernardo Craveiro, Helder Silva
+**Elementos presentes:** Bernardo Craveiro, Helder Silva  
 
 **Objetivo:**  
-Implementação do sistema de autenticação real com registo de utilizadores, login com JWT e persistência de dados por utilizador (encomendas, sessão).
+Implementação do sistema de autenticação real com JWT, registo de utilizadores e persistência por conta.
 
 **Atividades realizadas:**  
-- Bernardo Craveiro e Helder Silva: Análise da solução de autenticação existente (simulada) e definição da abordagem com JWT client-side usando a Web Crypto API nativa do browser;  
-- Bernardo Craveiro: Criação do JwtService com geração e verificação de tokens JWT (algoritmo HS256), assinatura HMAC-SHA256 e hash de passwords com SHA-256;  
-- Helder Silva: Reestruturação do AuthService para suportar registo real (com verificação de email duplicado e armazenamento de password com hash) e login com validação de credenciais;  
-- Bernardo Craveiro: Implementação da restauração automática de sessão ao iniciar a aplicação, com verificação da validade e expiração do token JWT (30 dias);  
-- Helder Silva: Atualização da página de autenticação para passar a password ao AuthService e apresentar mensagens de erro reais ao utilizador (ex: "Password incorreta.", "Este email já está registado.");  
-- Bernardo Craveiro e Helder Silva: Verificação de que o histórico de encomendas de cada utilizador é corretamente isolado e persistido, uma vez que o ID do utilizador é gerado no registo e se mantém estável entre sessões.
+- Bernardo Craveiro e Helder Silva: Definição da arquitetura de autenticação client-side com JWT e Web Crypto API;  
+- Bernardo Craveiro: Implementação do JwtService (HS256, HMAC-SHA256, hashing de passwords com SHA-256);  
+- Helder Silva: Reestruturação do AuthService com registo real, validação de email duplicado e autenticação com hash de password;  
+- Bernardo Craveiro: Implementação de restauração automática de sessão e validação de expiração do token (30 dias);  
+- Helder Silva: Atualização da interface de login com mensagens de erro reais;  
+- Bernardo Craveiro e Helder Silva: Implementação da separação de dados por utilizador (carrinho e histórico de encomendas).  
 
 **Problemas:**  
-- A sessão não era restaurada corretamente ao reabrir a aplicação porque o Ionic Storage ainda não estava inicializado quando o AuthService tentava ler o token.
+- A sessão não era restaurada corretamente devido ao acesso ao Ionic Storage antes da sua inicialização.
 
 **Solução:**  
-- Adicionou-se a chamada `ensureReady()` no StorageService antes de qualquer leitura, garantindo que o storage está pronto antes de aceder aos dados.
+- Introdução do método `ensureReady()` no StorageService para garantir inicialização antes de qualquer leitura/escrita.
 
 **Decisões:**  
-- Optou-se por uma implementação JWT puramente client-side (sem backend) usando a Web Crypto API, evitando dependências externas e mantendo a aplicação funcional como projeto académico;  
-- Decidiu-se armazenar a base de dados de utilizadores no Ionic Storage, separada do token JWT, para permitir múltiplas contas no mesmo dispositivo;  
-- O token JWT tem validade de 30 dias, após os quais o utilizador é redirecionado para o login automaticamente.
+- Implementação de JWT totalmente client-side para simplificar a solução académica;  
+- Separação de dados por utilizador no Ionic Storage;  
+- Validade do token definida para 30 dias.  
+
+---
+
+## Ajuda Externa
+
+Foi recebida ajuda pontual de um elemento externo ao grupo (irmão do Bernardo Craveiro), especialmente em aspetos técnicos mais avançados:
+
+- Inicialização correta do Ionic Storage e uso de `ensureReady()`;  
+- Boas práticas de gestão de sessão e segurança (tokens e persistência);  
+- Utilização da Web Crypto API para hashing e validação de dados de autenticação;  
+- Processamento e validação avançada de imagens no Customizer (upload, transformação e exportação em canvas);  
+- Resolução de problemas com Capacitor e orientação do ecrã em dispositivos móveis;  
+- Estratégias de sincronização e persistência do carrinho e histórico de encomendas em cenários de falha ou múltiplas contas.  
