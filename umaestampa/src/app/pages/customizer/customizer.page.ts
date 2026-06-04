@@ -13,12 +13,15 @@ import {
 import { addIcons } from 'ionicons';
 import { add, cartOutline, cloudUploadOutline, refreshOutline, remove } from 'ionicons/icons';
 import { HeaderComponent } from '../../components/header.component';
+import { AuthService } from '../../services/auth.service';
+import { CustomizerDraftService } from '../../services/customizer-draft.service';
 import { CartService } from '../../services/cart.service';
+import { DesignsService } from '../../services/designs.service';
 import { Product, ProductsService } from '../../services/products.service';
 import { ToastService } from '../../services/toast.service';
 import { ValidationService } from '../../services/validation.service';
 import { TooltipDirective } from '../../directives/tooltip.directive';
-import { arrowBackOutline } from 'ionicons/icons';
+import { arrowBackOutline, bookmarkOutline } from 'ionicons/icons';
 
 /**
  * Página de Customização de Produtos
@@ -54,6 +57,9 @@ export class CustomizerPage implements OnInit {
   private readonly router = inject(Router);
   private readonly productsService = inject(ProductsService);
   private readonly cartService = inject(CartService);
+  private readonly draftService = inject(CustomizerDraftService);
+  private readonly designsService = inject(DesignsService);
+  private readonly authService = inject(AuthService);
   private readonly toastService = inject(ToastService);
   private readonly validationService = inject(ValidationService);
 
@@ -88,6 +94,7 @@ export class CustomizerPage implements OnInit {
 constructor() {
   addIcons({
     add,
+      bookmarkOutline,
     cartOutline,
     cloudUploadOutline,
     refreshOutline,
@@ -108,7 +115,10 @@ constructor() {
 
     if (!this.product) {
       this.router.navigate(['/catalog']);
+      return;
     }
+
+    this.restoreDraft();
   }
 
   /**
@@ -160,6 +170,7 @@ constructor() {
       reader.onload = (readerEvent) => {
         this.uploadedImage = readerEvent.target?.result as string;
         this.resetAdjustments();
+        void this.persistDraft();
         this.isLoading.set(false);
         this.toastService.success('Imagem carregada com sucesso!');
       };
@@ -215,6 +226,7 @@ constructor() {
   onPointerUp(event: PointerEvent): void {
     this.isDragging = false;
     this.previewArea?.nativeElement.releasePointerCapture(event.pointerId);
+    void this.persistDraft();
   }
 
   /**
@@ -226,6 +238,11 @@ constructor() {
     this.imagePosition = { x: 50, y: 50 };
     this.imageScale = 100;
     this.imageRotation = 0;
+    void this.persistDraft();
+  }
+
+  onAdjustmentsChanged(): void {
+    void this.persistDraft();
   }
 
   /**
@@ -253,11 +270,80 @@ constructor() {
         quantity: 1,
       });
 
+      await this.persistDraft();
+
       await this.toastService.success(`${this.product.name} adicionado ao carrinho!`);
       this.router.navigate(['/cart']);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
       await this.toastService.error(`Falha ao adicionar ao carrinho: ${errorMessage}`);
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  private async persistDraft(): Promise<void> {
+    if (!this.product || !this.uploadedImage) {
+      return;
+    }
+
+    await this.draftService.saveDraft({
+      productId: this.product.id,
+      imageUrl: this.uploadedImage,
+      imagePosition: this.imagePosition,
+      imageScale: this.imageScale,
+      imageRotation: this.imageRotation,
+    });
+  }
+
+  private async restoreDraft(): Promise<void> {
+    if (!this.product) {
+      return;
+    }
+
+    const draft = await this.draftService.getDraft();
+    if (!draft || draft.productId !== this.product.id) {
+      return;
+    }
+
+    this.uploadedImage = draft.imageUrl;
+    this.imagePosition = draft.imagePosition;
+    this.imageScale = draft.imageScale;
+    this.imageRotation = draft.imageRotation;
+  }
+
+  /**
+   * Guarda o design atual na biblioteca do utilizador
+   * @async
+   * @returns {Promise<void>}
+   */
+  async saveDesign(): Promise<void> {
+    if (!this.product || !this.uploadedImage) {
+      await this.toastService.error('Por favor carregue uma imagem antes de guardar o design.');
+      return;
+    }
+
+    if (!this.authService.isAuthenticated) {
+      await this.toastService.error('Tem de iniciar sessão para guardar designs.');
+      this.router.navigate(['/auth']);
+      return;
+    }
+
+    try {
+      this.isLoading.set(true);
+
+      await this.designsService.saveDesign({
+        product: this.product,
+        imageUrl: this.uploadedImage,
+        imagePosition: this.imagePosition,
+        imageScale: this.imageScale,
+        imageRotation: this.imageRotation,
+      });
+
+      await this.toastService.success('Design guardado com sucesso!');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      await this.toastService.error(`Falha ao guardar design: ${errorMessage}`);
     } finally {
       this.isLoading.set(false);
     }

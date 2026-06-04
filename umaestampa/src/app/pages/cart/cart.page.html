@@ -2,6 +2,11 @@
 
 <ion-content>
   <div class="page-shell cart-shell">
+    <button *ngIf="items().length > 0" type="button" class="back-button" (click)="returnToCustomizer()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+      <span>Voltar à Customização</span>
+    </button>
+
     <h1 class="screen-title">Carrinho de Compras</h1>
 
     <div *ngIf="items().length === 0" class="surface-card flex flex-col items-center justify-center px-6 py-20 text-center">

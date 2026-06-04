@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent, IonIcon, PopoverController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { logOutOutline, receiptOutline } from 'ionicons/icons';
+import { bookmarkOutline, logOutOutline, receiptOutline } from 'ionicons/icons';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -24,6 +24,11 @@ import { AuthService } from '../services/auth.service';
           <button class="action-button order-history" (click)="goToOrderHistory()">
             <ion-icon name="receipt-outline" class="button-icon"></ion-icon>
             <span>Histórico de Encomendas</span>
+          </button>
+
+          <button class="action-button saved-designs" (click)="goToSavedDesigns()">
+            <ion-icon name="bookmark-outline" class="button-icon"></ion-icon>
+            <span>Designs Guardados</span>
           </button>
 
           <div class="divider"></div>
@@ -50,12 +55,17 @@ export class AuthPopupComponent {
   readonly currentUser = this.authService.user;
 
   constructor() {
-    addIcons({ logOutOutline, receiptOutline });
+    addIcons({ bookmarkOutline, logOutOutline, receiptOutline });
   }
 
   async goToOrderHistory(): Promise<void> {
     await this.popoverCtrl.dismiss();
     this.router.navigate(['/order-history']);
+  }
+
+  async goToSavedDesigns(): Promise<void> {
+    await this.popoverCtrl.dismiss();
+    this.router.navigate(['/saved-designs']);
   }
 
   async logout(): Promise<void> {

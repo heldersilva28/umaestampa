@@ -8,6 +8,7 @@ import { Storage } from '@ionic/storage-angular';
 export const STORAGE_KEYS = {
   CART_ITEMS: 'cart_items',
   ORDER_HISTORY: 'order_history',
+  SAVED_DESIGNS: 'saved_designs',
   USER_DATA: 'user_data',
 } as const;
 

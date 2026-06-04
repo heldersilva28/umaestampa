@@ -12,6 +12,7 @@ import { Routes } from '@angular/router';
  * - /checkout - Página de finalização de compra
  * - /auth - Página de autenticação (login/registo)
  * - /order-history - Histórico de pedidos do utilizador
+ * - /saved-designs - Biblioteca de designs guardados
  */
 export const routes: Routes = [
   // Rota padrão: redireciona para o catálogo
@@ -57,5 +58,12 @@ export const routes: Routes = [
     path: 'order-history',
     loadComponent: () =>
       import('./pages/order-history/order-history.page').then((m) => m.OrderHistoryPage),
+  },
+
+  // Biblioteca de designs guardados
+  {
+    path: 'saved-designs',
+    loadComponent: () =>
+      import('./pages/saved-designs/saved-designs.page').then((m) => m.SavedDesignsPage),
   },
 ];

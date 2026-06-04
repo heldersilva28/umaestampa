@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   AlertController,
   IonButton,
@@ -14,9 +14,11 @@ import {
   bagOutline,
   remove,
   trashOutline,
+  arrowBackOutline,
 } from 'ionicons/icons';
 import { HeaderComponent } from '../../components/header.component';
 import { CartService } from '../../services/cart.service';
+import { CustomizerDraftService } from '../../services/customizer-draft.service';
 import { ToastService } from '../../services/toast.service';
 
 /**
@@ -43,6 +45,8 @@ import { ToastService } from '../../services/toast.service';
 })
 export class CartPage {
   private readonly cartService = inject(CartService);
+  private readonly draftService = inject(CustomizerDraftService);
+  private readonly router = inject(Router);
   private readonly alertController = inject(AlertController);
   private readonly toastService = inject(ToastService);
 
@@ -68,11 +72,36 @@ export class CartPage {
   constructor() {
     addIcons({
       add,
+      arrowBackOutline,
       arrowForwardOutline,
       bagOutline,
       remove,
       trashOutline,
     });
+  }
+
+  async returnToCustomizer(): Promise<void> {
+    const draft = await this.draftService.getDraft();
+    if (draft) {
+      this.router.navigate(['/customizer', draft.productId]);
+      return;
+    }
+
+    const firstItem = this.items()[0];
+    if (!firstItem) {
+      this.router.navigate(['/catalog']);
+      return;
+    }
+
+    await this.draftService.saveDraft({
+      productId: firstItem.product.id,
+      imageUrl: firstItem.imageUrl,
+      imagePosition: firstItem.imagePosition,
+      imageScale: firstItem.imageScale,
+      imageRotation: firstItem.imageRotation,
+    });
+
+    this.router.navigate(['/customizer', firstItem.product.id]);
   }
 
   /**

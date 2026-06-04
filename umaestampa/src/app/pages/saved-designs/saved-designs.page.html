@@ -1,0 +1,78 @@
+<app-header></app-header>
+
+<ion-content>
+  <div class="page-shell saved-designs-shell">
+    <button type="button" class="back-button" routerLink="/catalog">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+      <span>Voltar ao Catálogo</span>
+    </button>
+
+    <div class="hero-card surface-card">
+      <div>
+        <span class="kicker">Biblioteca</span>
+        <h1 class="screen-title">Designs Guardados</h1>
+        <p class="hero-copy">Veja os designs que salvou e reutilize-os sem repetir o trabalho de personalização.</p>
+      </div>
+      <div class="hero-badge">
+        <ion-icon name="bookmark-outline"></ion-icon>
+        <strong>{{ designCount() }}</strong>
+        <span>guardados</span>
+      </div>
+    </div>
+
+    <div *ngIf="designs().length === 0" class="empty-designs surface-card">
+      <div class="empty-icon">
+        <ion-icon name="images-outline"></ion-icon>
+      </div>
+      <h2>Sem Designs Guardados</h2>
+      <p>Quando guardar um design no customizer, ele aparecerá aqui com a pré-visualização completa.</p>
+      <ion-button routerLink="/catalog" class="primary-action">
+        Explorar Produtos
+      </ion-button>
+    </div>
+
+    <div *ngIf="designs().length > 0" class="design-grid">
+      <article *ngFor="let design of designs()" class="design-card surface-card">
+        <div class="design-preview">
+          <img
+            class="product-image"
+            [src]="design.product.image"
+            [alt]="design.product.name"
+          />
+          <img
+            class="design-overlay"
+            [src]="design.imageUrl"
+            alt="Imagem guardada do design"
+            [style.left.%]="design.imagePosition.x"
+            [style.top.%]="design.imagePosition.y"
+            [style.transform]="previewTransform(design)"
+          />
+        </div>
+
+        <div class="design-body">
+          <div class="design-heading">
+            <div>
+              <span class="design-kicker">{{ design.product.category }}</span>
+              <h2>{{ design.product.name }}</h2>
+            </div>
+            <span class="design-price">€{{ design.product.price.toFixed(2) }}</span>
+          </div>
+
+          <div class="design-actions">
+            <ion-button fill="outline" size="small" (click)="editDesign(design)">
+              <ion-icon name="pencil-outline" slot="start"></ion-icon>
+              Editar
+            </ion-button>
+            <ion-button fill="solid" size="small" class="primary-action" (click)="addDesignToCart(design)">
+              <ion-icon name="cart-outline" slot="start"></ion-icon>
+              Adicionar ao Carrinho
+            </ion-button>
+            <ion-button fill="clear" size="small" (click)="removeDesign(design.id)">
+              Remover
+            </ion-button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</ion-content>

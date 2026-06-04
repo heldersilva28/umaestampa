@@ -82,6 +82,7 @@
             [min]="20"
             [max]="200"
             [(ngModel)]="imageScale"
+            (ionChange)="onAdjustmentsChanged()"
             style="--bar-background: var(--muted); --bar-background-active: var(--brand-accent); --knob-background: var(--brand-accent);"
             appTooltip="Ajuste o tamanho da imagem de 20% a 200%"
           >
@@ -98,6 +99,7 @@
             [min]="-180"
             [max]="180"
             [(ngModel)]="imageRotation"
+            (ionChange)="onAdjustmentsChanged()"
             style="--bar-background: var(--muted); --bar-background-active: var(--brand-accent); --knob-background: var(--brand-accent);"
             appTooltip="Rotacione a imagem de -180° a +180°"
           >
@@ -121,6 +123,18 @@
         <ion-spinner *ngIf="isLoading()" name="crescent" slot="start"></ion-spinner>
         <ion-icon *ngIf="!isLoading()" name="cart-outline" slot="start"></ion-icon>
         {{ isLoading() ? 'A adicionar...' : 'Adicionar ao Carrinho' }}
+      </ion-button>
+
+      <ion-button
+        expand="block"
+        fill="outline"
+        style="--color: var(--brand-accent); --border-color: var(--brand-accent); --border-radius: 12px;"
+        class="mt-3"
+        [disabled]="!uploadedImage || isLoading()"
+        (click)="saveDesign()"
+      >
+        <ion-icon name="bookmark-outline" slot="start"></ion-icon>
+        Guardar Design
       </ion-button>
     </div>
   </div>
