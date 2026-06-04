@@ -81,6 +81,9 @@
               [(ngModel)]="registerPassword"
               autocomplete="new-password"
             ></ion-input>
+            <ion-button fill="clear" slot="end" (click)="showPassword = !showPassword" aria-label="Mostrar password">
+              <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="icon-only"></ion-icon>
+            </ion-button>
           </ion-item>
         </label>
 

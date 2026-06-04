@@ -14,10 +14,11 @@ Definição da estrutura da aplicação e início da implementação das página
 
 **Atividades realizadas:**  
 - Bernardo Craveiro: Criação do projeto base em Ionic/Angular e configuração do ambiente de desenvolvimento;  
-- Bernardo Craveiro: Implementação da página de Catálogo com listagem de produtos a partir de um ficheiro JSON;  
-- Helder Silva: Criação da estrutura de navegação entre páginas (app.routes.ts);  
-- Helder Silva: Implementação do componente de cabeçalho (HeaderComponent) com ligação ao carrinho e à conta do utilizador;  
-- Helder Silva: Configuração do Ionic Storage para persistência de dados no dispositivo.
+ - Bernardo Craveiro: Implementação do catálogo de produtos com listagem a partir de ficheiro JSON (com Helder);  
+ - Helder Silva: Criação da estrutura de navegação entre páginas (app.routes.ts);  
+ - Helder Silva: Implementação do componente de cabeçalho (HeaderComponent) com ligação ao carrinho e à conta do utilizador;  
+ - Helder Silva: Configuração do Ionic Storage para persistência de dados no dispositivo.
+ - Helder Silva: Implementação do catálogo de produtos (com Bernardo);
 
 **Problemas:**  
 - Os produtos não apareciam na página de catálogo após a primeira renderização.

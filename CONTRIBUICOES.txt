@@ -11,34 +11,40 @@ ELEMENTOS DO GRUPO
 DIVISÃO DE TAREFAS
 ------------------
 A maioria do trabalho foi realizada em conjunto, no computador do Helder Silva,
-trabalhando os dois em simultâneo no mesmo PC.
+trabalhando os dois em simultâneo no mesmo PC pois o Bernardo estava sem PC
+durante umas semanas devido avaria.
 
 A divisão aproximada do projeto foi a seguinte:
 
   Helder Silva (60%)
   - Estruturação principal do projeto (routing, serviços, páginas)
-  - Implementação do catálogo de produtos e página de personalização
-  - Implementação da autenticação (login/registo) e gestão de sessão
+  - Implementação do Catálogo de produtos (com Bernardo)
+  - Criação da estrutura de navegação e componente de cabeçalho (HeaderComponent)
+  - Configuração do Ionic Storage e persistência de dados
+  - Implementação da página de personalização (Customizer) com upload e validações
   - Configuração do Capacitor e orientação do ecrã
   - Design e estilos globais (CSS Custom Properties, global.scss)
-  - Implementação do carrinho de compras e checkout
 
   Bernardo Craveiro (40%)
-  - Apoio no desenvolvimento das páginas e componentes
-  - Testes e validação do funcionamento da app
-  - Contribuição para o design e experiência do utilizador
+  - Criação do projeto base em Ionic/Angular e configuração do ambiente de desenvolvimento
+  - Implementação do Catálogo de produtos com listagem a partir de ficheiro JSON (com Helder)
+  - Implementação do CartService, página de Carrinho e processo de Checkout
+  - Criação do JwtService e trabalho em autenticação (com Helder)
   - Estruturação dos ficheiros JSON (produtos e ajuda)
-  - Histórico de encomendas e badges de estado
+  - Histórico de encomendas, badges de estado, testes e validação do funcionamento da app
 
 
 AJUDA EXTERNA
 -------------
 Recebemos ajuda humana de um elemento exterior ao grupo: o irmão do Bernardo Craveiro.
 
-A ajuda prestada foi pontual e incidiu sobre dúvidas relacionadas com:
-- Como guardar os dados do utilizador de forma persistente na app
-  (nomeadamente dados de login/registo e histórico de encomendas)
-- Esclarecimento sobre o uso do Ionic Storage para persistência local
+A ajuda prestada foi pontual e incidiu sobre várias questões técnicas mais complexas, nomeadamente:
+- Inicialização e utilização avançada do storage (por exemplo, `ensureReady()` e estratégias de persistência por utilizador);
+- Gestão de sessão e segurança (restauração de sessão, validade de tokens e boas práticas de armazenamento);
+- Esclarecimentos sobre o uso da Web Crypto API para operações criptográficas relacionadas com autenticação (hashing, assinatura/validação de tokens);
+- Processamento e validação de imagens no `Customizer` (upload, validação de tipo/tamanho, transformação por drag/scale/rotate e exportação em canvas);
+- Resolução de problemas de integração com Capacitor e gestão de orientação do ecrã em dispositivos;
+- Persistência e sincronização do carrinho/checkout em cenários de falha ou múltiplas contas;
 
 
 

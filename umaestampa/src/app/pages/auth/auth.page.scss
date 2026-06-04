@@ -142,6 +142,9 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 12px;
 
+  display: flex;
+  align-items: center;
+
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
@@ -155,6 +158,8 @@
 .auth-fields ion-icon {
   color: #667085;
   font-size: 1.1rem;
+  margin-right: 12px;
+  margin-bottom: px;
 }
 
 .auth-fields ion-input {
