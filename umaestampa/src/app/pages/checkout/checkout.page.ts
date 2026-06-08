@@ -11,6 +11,8 @@ import {
   IonLabel,
   IonRadio,
   IonRadioGroup,
+  IonSelect,
+  IonSelectOption,
   IonSpinner,
   IonTextarea,
 } from '@ionic/angular/standalone';
@@ -20,6 +22,8 @@ import {
   businessOutline,
   cardOutline,
   checkmarkCircle,
+  informationCircleOutline,
+  lockClosedOutline,
   phonePortraitOutline,
 } from 'ionicons/icons';
 import { HeaderComponent } from '../../components/header.component';
@@ -60,6 +64,8 @@ type CheckoutStep = 1 | 2 | 3;
     IonLabel,
     IonRadio,
     IonRadioGroup,
+    IonSelect,
+    IonSelectOption,
     IonSpinner,
     IonTextarea,
     TooltipDirective,
@@ -127,7 +133,22 @@ export class CheckoutPage implements OnInit {
     postalCode: '',
     notes: '',
     paymentMethod: 'card',
+    cardName: '',
+    cardNumber: '',
+    cardExpiry: '',
+    cardCvv: '',
+    mbwayPhone: '',
   };
+
+  readonly portugueseCities: string[] = [
+    'Aveiro', 'Beja', 'Braga', 'Bragança', 'Castelo Branco', 'Coimbra',
+    'Évora', 'Faro', 'Guarda', 'Leiria', 'Lisboa', 'Portalegre',
+    'Porto', 'Santarém', 'Setúbal', 'Viana do Castelo', 'Vila Real',
+    'Viseu', 'Angra do Heroísmo', 'Horta', 'Ponta Delgada', 'Funchal',
+    'Almada', 'Amadora', 'Barreiro', 'Braga', 'Cascais', 'Covilhã',
+    'Gondomar', 'Guimarães', 'Loures', 'Maia', 'Matosinhos',
+    'Odivelas', 'Oeiras', 'Sintra', 'Vila Nova de Gaia', 'Vila Franca de Xira',
+  ];
 
   /**
    * Construtor - Registra os ícones a utilizar no template
@@ -139,6 +160,8 @@ export class CheckoutPage implements OnInit {
       businessOutline,
       cardOutline,
       checkmarkCircle,
+      informationCircleOutline,
+      lockClosedOutline,
       phonePortraitOutline,
     });
   }
@@ -192,6 +215,28 @@ export class CheckoutPage implements OnInit {
   }
 
   /**
+   * Formata o número do cartão com espaços a cada 4 dígitos
+   */
+  formatCardNumber(value: string | null | undefined): void {
+    if (!value) return;
+    const digits = value.replace(/\D/g, '').substring(0, 16);
+    this.formData.cardNumber = digits.replace(/(.{4})/g, '$1 ').trim();
+  }
+
+  /**
+   * Formata a validade do cartão como MM/AA
+   */
+  formatCardExpiry(value: string | null | undefined): void {
+    if (!value) return;
+    const digits = value.replace(/\D/g, '').substring(0, 4);
+    if (digits.length <= 2) {
+      this.formData.cardExpiry = digits;
+    } else {
+      this.formData.cardExpiry = digits.substring(0, 2) + '/' + digits.substring(2);
+    }
+  }
+
+  /**
    * Formata o telefone mantendo apenas o prefixo +351
    * @param value - Valor do telefone
    */
@@ -231,6 +276,32 @@ export class CheckoutPage implements OnInit {
       case 'postalCode':
         validationResult = this.validationService.validatePostalCode(value as string);
         break;
+      case 'cardName':
+        validationResult = (value as string)?.trim().length >= 2
+          ? { isValid: true }
+          : { isValid: false, error: 'Insira o nome como aparece no cartão' };
+        break;
+      case 'cardNumber':
+        validationResult = /^\d{4} \d{4} \d{4} \d{4}$/.test((value as string)?.trim())
+          ? { isValid: true }
+          : { isValid: false, error: 'Número de cartão inválido (16 dígitos)' };
+        break;
+      case 'cardExpiry':
+        validationResult = /^\d{2}\/\d{2}$/.test((value as string)?.trim())
+          ? { isValid: true }
+          : { isValid: false, error: 'Validade inválida (formato MM/AA)' };
+        break;
+      case 'cardCvv':
+        validationResult = /^\d{3,4}$/.test((value as string)?.trim())
+          ? { isValid: true }
+          : { isValid: false, error: 'CVV inválido (3 ou 4 dígitos)' };
+        break;
+      case 'mbwayPhone':
+        validationResult = this.validationService.validatePhone(value as string);
+        if (!validationResult.isValid) {
+          validationResult = { isValid: false, error: 'Número de telemóvel MB WAY inválido' };
+        }
+        break;
     }
 
     if (validationResult.isValid) {
@@ -257,7 +328,16 @@ export class CheckoutPage implements OnInit {
    */
   async nextStep(): Promise<void> {
     if (this.currentStep() === 1 && !this.validateCustomerAndAddress()) {
-      await this.toastService.error('Preencha corretamente os dados de contacto e morada.');
+      const errorFields = Object.keys(this.errors());
+      const fieldNames: Record<string, string> = {
+        name: 'Nome Completo',
+        phone: 'Telefone',
+        address: 'Morada',
+        city: 'Cidade',
+        postalCode: 'Código Postal',
+      };
+      const missing = errorFields.map((f) => fieldNames[f] || f).join(', ');
+      await this.toastService.error(`Corrija os seguintes campos: ${missing}`);
       return;
     }
 
@@ -267,6 +347,9 @@ export class CheckoutPage implements OnInit {
     }
 
     if (this.currentStep() === 2) {
+      if (!this.validatePaymentFields()) {
+        return;
+      }
       this.currentStep.set(3);
     }
   }
@@ -337,6 +420,27 @@ export class CheckoutPage implements OnInit {
       default:
         return 'Cartão de Crédito/Débito';
     }
+  }
+
+  private validatePaymentFields(): boolean {
+    let valid = true;
+
+    if (this.formData.paymentMethod === 'card') {
+      const fields: Array<keyof typeof this.formData> = ['cardName', 'cardNumber', 'cardExpiry', 'cardCvv'];
+      for (const field of fields) {
+        this.validateField(field);
+        if (this.errors()[field]) valid = false;
+      }
+    } else if (this.formData.paymentMethod === 'mbway') {
+      this.validateField('mbwayPhone');
+      if (this.errors()['mbwayPhone']) valid = false;
+    }
+
+    if (!valid) {
+      this.toastService.error('Preencha corretamente os dados de pagamento.');
+    }
+
+    return valid;
   }
 
   private validateCustomerAndAddress(): boolean {

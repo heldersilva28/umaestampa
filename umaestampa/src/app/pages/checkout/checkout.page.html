@@ -61,17 +61,16 @@
 
           <label>
             <span>Email *</span>
-            <ion-item lines="none" class="form-field" [class.field-error]="errors()['email']">
+            <ion-item lines="none" class="form-field readonly-field">
               <ion-input
                 type="email"
-                placeholder="joao@exemplo.pt"
-                [(ngModel)]="formData.email"
-                (ionBlur)="validateField('email')"
-                autocomplete="email"
-                appTooltip="Receberá confirmação e rastreio por aqui"
+                [value]="formData.email"
+                [readonly]="true"
+                appTooltip="O email está associado à sua conta e não pode ser alterado"
               ></ion-input>
+              <ion-icon name="lock-closed-outline" slot="end" class="readonly-icon"></ion-icon>
             </ion-item>
-            <span *ngIf="errors()['email']" class="error-message">{{ errors()['email'] }}</span>
+            <span class="field-hint">Associado à sua conta</span>
           </label>
 
           <label>
@@ -113,13 +112,15 @@
           <label>
             <span>Cidade *</span>
             <ion-item lines="none" class="form-field" [class.field-error]="errors()['city']">
-              <ion-input
-                type="text"
-                placeholder="Lisboa"
+              <ion-select
+                interface="popover"
+                placeholder="Selecione a cidade"
                 [(ngModel)]="formData.city"
-                (ionBlur)="validateField('city')"
-                appTooltip="Cidade ou localidade de entrega"
-              ></ion-input>
+                (ionChange)="validateField('city')"
+                appTooltip="Selecione a sua cidade de entrega"
+              >
+                <ion-select-option *ngFor="let city of portugueseCities" [value]="city">{{ city }}</ion-select-option>
+              </ion-select>
             </ion-item>
             <span *ngIf="errors()['city']" class="error-message">{{ errors()['city'] }}</span>
           </label>
@@ -193,6 +194,102 @@
             </ion-label>
           </ion-item>
         </ion-radio-group>
+
+        <!-- Campos do Cartão de Crédito/Débito -->
+        <div *ngIf="formData.paymentMethod === 'card'" class="payment-details-fields">
+          <h3>Dados do Cartão</h3>
+          <div class="field-stack">
+            <label>
+              <span>Nome no Cartão *</span>
+              <ion-item lines="none" class="form-field" [class.field-error]="errors()['cardName']">
+                <ion-input
+                  type="text"
+                  placeholder="João Silva"
+                  [(ngModel)]="formData.cardName"
+                  (ionBlur)="validateField('cardName')"
+                  autocomplete="cc-name"
+                ></ion-input>
+              </ion-item>
+              <span *ngIf="errors()['cardName']" class="error-message">{{ errors()['cardName'] }}</span>
+            </label>
+
+            <label>
+              <span>Número do Cartão *</span>
+              <ion-item lines="none" class="form-field" [class.field-error]="errors()['cardNumber']">
+                <ion-input
+                  type="text"
+                  placeholder="1234 5678 9012 3456"
+                  [(ngModel)]="formData.cardNumber"
+                  (ionChange)="formatCardNumber($event.detail.value)"
+                  (ionBlur)="validateField('cardNumber')"
+                  autocomplete="cc-number"
+                  maxlength="19"
+                ></ion-input>
+              </ion-item>
+              <span *ngIf="errors()['cardNumber']" class="error-message">{{ errors()['cardNumber'] }}</span>
+            </label>
+
+            <div class="card-row">
+              <label>
+                <span>Validade *</span>
+                <ion-item lines="none" class="form-field" [class.field-error]="errors()['cardExpiry']">
+                  <ion-input
+                    type="text"
+                    placeholder="MM/AA"
+                    [(ngModel)]="formData.cardExpiry"
+                    (ionChange)="formatCardExpiry($event.detail.value)"
+                    (ionBlur)="validateField('cardExpiry')"
+                    autocomplete="cc-exp"
+                    maxlength="5"
+                  ></ion-input>
+                </ion-item>
+                <span *ngIf="errors()['cardExpiry']" class="error-message">{{ errors()['cardExpiry'] }}</span>
+              </label>
+
+              <label>
+                <span>CVV *</span>
+                <ion-item lines="none" class="form-field" [class.field-error]="errors()['cardCvv']">
+                  <ion-input
+                    type="password"
+                    placeholder="123"
+                    [(ngModel)]="formData.cardCvv"
+                    (ionBlur)="validateField('cardCvv')"
+                    autocomplete="cc-csc"
+                    maxlength="4"
+                  ></ion-input>
+                </ion-item>
+                <span *ngIf="errors()['cardCvv']" class="error-message">{{ errors()['cardCvv'] }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campo MB WAY -->
+        <div *ngIf="formData.paymentMethod === 'mbway'" class="payment-details-fields">
+          <h3>Dados MB WAY</h3>
+          <div class="field-stack">
+            <label>
+              <span>Número de Telemóvel *</span>
+              <ion-item lines="none" class="form-field" [class.field-error]="errors()['mbwayPhone']">
+                <ion-input
+                  type="tel"
+                  placeholder="+351 912 345 678"
+                  [(ngModel)]="formData.mbwayPhone"
+                  (ionBlur)="validateField('mbwayPhone')"
+                  autocomplete="tel"
+                ></ion-input>
+              </ion-item>
+              <span *ngIf="errors()['mbwayPhone']" class="error-message">{{ errors()['mbwayPhone'] }}</span>
+              <span class="field-hint">Irá receber um pedido de pagamento neste número</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Info Transferência Bancária -->
+        <div *ngIf="formData.paymentMethod === 'transfer'" class="payment-details-fields transfer-info">
+          <ion-icon name="information-circle-outline"></ion-icon>
+          <p>Após confirmar a encomenda, receberá por email o IBAN e referência para efetuar a transferência. A encomenda será processada após confirmação do pagamento.</p>
+        </div>
       </section>
 
       <div class="checkout-actions">
@@ -227,6 +324,12 @@
           <div class="review-block">
             <h3>Pagamento</h3>
             <p>{{ paymentMethodLabel() }}</p>
+            <p *ngIf="formData.paymentMethod === 'card' && formData.cardNumber">
+              **** **** **** {{ formData.cardNumber.replace(/\s/g, '').slice(-4) }}
+            </p>
+            <p *ngIf="formData.paymentMethod === 'mbway' && formData.mbwayPhone">
+              {{ formData.mbwayPhone }}
+            </p>
           </div>
         </div>
 
