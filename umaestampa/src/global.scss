@@ -459,6 +459,40 @@ ion-textarea {
 }
 
 /**
+ * Classe: Back Button
+ * Botão de navegação para trás, reutilizável em todas as páginas
+ */
+.back-button,
+.checkout-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 4px;
+  margin: 8px 0 28px;
+  border: 0;
+  background: transparent;
+  color: #111;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: gap 0.2s;
+  min-height: 44px;
+}
+
+.back-button:hover,
+.checkout-back:hover {
+  gap: 16px;
+  color: var(--brand-accent);
+}
+
+.back-button ion-icon,
+.checkout-back ion-icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+/**
  * Classe: Form Validation
  * Estilos para campos de formulário com erro
  */
