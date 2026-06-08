@@ -151,11 +151,10 @@ Correção de problemas de usabilidade identificados nas avaliações heurístic
 
 * Nenhum problema técnico relevante nesta sessão.
 
-**Decisões:**
-
-* Email mantido como read-only em vez de removido, para o utilizador continuar a visualizar qual o email associado;
-* Lista de cidades implementada como dropdown fixo com as principais cidades portuguesas;
-* Campos de pagamento adicionados apenas no passo 2, sem afetar os restantes passos do checkout.
+**Decisões:**  
+- Implementação de JWT totalmente client-side para simplificar a solução académica;  
+- Separação de dados por utilizador no Ionic Storage;  
+- Validade do token definida para 30 dias.  
 
 ---
 
@@ -163,9 +162,9 @@ Correção de problemas de usabilidade identificados nas avaliações heurístic
 
 Foi recebida ajuda pontual de um elemento externo ao grupo (irmão do Bernardo Craveiro), especialmente em aspetos técnicos mais avançados:
 
-* Inicialização correta do Ionic Storage e uso de `ensureReady()`;
-* Boas práticas de gestão de sessão e segurança (tokens e persistência);
-* Utilização da Web Crypto API para hashing e validação de dados de autenticação;
-* Processamento e validação avançada de imagens no Customizer (upload, transformação e exportação em canvas);
-* Resolução de problemas com Capacitor e orientação do ecrã em dispositivos móveis;
-* Estratégias de sincronização e persistência do carrinho e histórico de encomendas em cenários de falha ou múltiplas contas.
+- Inicialização correta do Ionic Storage e uso de `ensureReady()`;  
+- Boas práticas de gestão de sessão e segurança (tokens e persistência);  
+- Utilização da Web Crypto API para hashing e validação de dados de autenticação;  
+- Processamento e validação avançada de imagens no Customizer (upload, transformação e exportação em canvas);  
+- Resolução de problemas com Capacitor e orientação do ecrã em dispositivos móveis;  
+- Estratégias de sincronização e persistência do carrinho e histórico de encomendas em cenários de falha ou múltiplas contas.  
