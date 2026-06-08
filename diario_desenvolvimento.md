@@ -86,6 +86,31 @@ Implementação do sistema de autenticação real com JWT, registo de utilizador
 - Validade do token definida para 30 dias.  
 
 ---
+## Sessão 4 – 8 de junho de 2026
+
+**Elementos presentes:** Bernardo Craveiro, Helder Silva  
+
+**Objetivo:**  
+Correção de problemas de usabilidade identificados nas avaliações heurísticas realizadas por outros grupos.
+
+**Atividades realizadas:**  
+- Bernardo Craveiro e Helder Silva: Análise e triagem dos problemas reportados nas avaliações heurísticas;  
+- Bernardo Craveiro: Campo de email no checkout tornado read-only (o email está associado à conta e não deve ser alterável, evitando erros — Heurística #5);  
+- Bernardo Craveiro: Campo "Cidade" no checkout substituído por um dropdown com lista de cidades portuguesas, reduzindo erros de digitação (Heurística #5);  
+- Helder Silva: Mensagens de erro no checkout tornadas específicas por campo — em vez de uma mensagem genérica, o toast indica exatamente quais campos têm erro (Heurística #9);  
+- Helder Silva: Adição de campos de dados de pagamento no passo 2 do checkout: dados do cartão (nome, número, validade, CVV) para pagamento por cartão, número de telemóvel para MB WAY, e nota informativa para transferência bancária (Heurística #8);  
+- Bernardo Craveiro: Botão "Personalizar" no catálogo reduzido em tamanho (Heurística #8);  
+- Helder Silva: Estilos dos botões de voltar melhorados globalmente — maior espaçamento vertical e área de toque mais generosa (Heurística #8).
+
+**Problemas:**  
+- Nenhum problema técnico relevante nesta sessão.
+
+**Decisões:**  
+- Email mantido como read-only em vez de removido, para o utilizador continuar a visualizar qual o email associado;  
+- Lista de cidades implementada como dropdown fixo com as principais cidades portuguesas;  
+- Campos de pagamento adicionados apenas no passo 2, sem afetar os restantes passos do checkout.
+
+---
 
 ## Ajuda Externa
 
