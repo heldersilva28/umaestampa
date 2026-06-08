@@ -59,16 +59,19 @@
           </div>
 
           <div class="design-actions">
-            <ion-button fill="outline" size="small" (click)="editDesign(design)">
-              <ion-icon name="pencil-outline" slot="start"></ion-icon>
-              Editar
-            </ion-button>
-            <ion-button fill="solid" size="small" class="primary-action" (click)="addDesignToCart(design)">
+            <div class="design-actions-secondary">
+              <ion-button fill="outline" size="small" class="secondary-action" (click)="editDesign(design)">
+                <ion-icon name="pencil-outline" slot="start"></ion-icon>
+                Editar
+              </ion-button>
+              <ion-button fill="outline" size="small" color="danger" class="secondary-action" (click)="removeDesign(design.id)">
+                <ion-icon name="trash-outline" slot="start"></ion-icon>
+                Remover
+              </ion-button>
+            </div>
+            <ion-button fill="solid" expand="block" class="primary-action" (click)="addDesignToCart(design)">
               <ion-icon name="cart-outline" slot="start"></ion-icon>
               Adicionar ao Carrinho
-            </ion-button>
-            <ion-button fill="clear" size="small" (click)="removeDesign(design.id)">
-              Remover
             </ion-button>
           </div>
         </div>

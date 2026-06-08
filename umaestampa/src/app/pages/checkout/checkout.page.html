@@ -325,7 +325,7 @@
             <h3>Pagamento</h3>
             <p>{{ paymentMethodLabel() }}</p>
             <p *ngIf="formData.paymentMethod === 'card' && formData.cardNumber">
-              **** **** **** {{ formData.cardNumber.replace(/\s/g, '').slice(-4) }}
+              {{ getMaskedCard() }}
             </p>
             <p *ngIf="formData.paymentMethod === 'mbway' && formData.mbwayPhone">
               {{ formData.mbwayPhone }}

@@ -540,4 +540,18 @@ export class CheckoutPage implements OnInit {
       window.setTimeout(resolve, ms);
     });
   }
+  // Retorna os últimos 4 dígitos do cartão para exibição no resumo
+  getMaskedCard(): string {
+    if (!this.formData?.cardNumber) return '';
+
+    const cleaned = this.formData.cardNumber.replace(/\s/g, '');
+
+    if (cleaned.length <= 4) return cleaned;
+
+    return cleaned
+      .slice(0, -4)
+      .replace(/./g, '*')
+      .match(/.{1,4}/g)
+      ?.join(' ') + ' ' + cleaned.slice(-4);
+  }
 }

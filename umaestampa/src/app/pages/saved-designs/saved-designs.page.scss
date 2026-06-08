@@ -127,9 +127,31 @@
 
 .design-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.design-actions-secondary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
-  justify-content: flex-end;
+}
+
+.design-actions .primary-action {
+  --border-radius: 14px;
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.design-actions .secondary-action {
+  --border-radius: 14px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  margin: 0;
+  font-weight: 600;
 }
 
 .empty-designs {
@@ -149,5 +171,9 @@
   .hero-card {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .design-actions-secondary {
+    grid-template-columns: 1fr;
   }
 }
