@@ -22,6 +22,7 @@ A divisão aproximada do projeto foi a seguinte:
   - Criação da estrutura de navegação e componente de cabeçalho (HeaderComponent)
   - Configuração do Ionic Storage e persistência de dados
   - Implementação da página de personalização (Customizer) com upload e validações
+  - Implementação da biblioteca de designs guardados, com edição, envio para o carrinho e preservação do estado da personalização
   - Configuração do Capacitor e orientação do ecrã
   - Design e estilos globais (CSS Custom Properties, global.scss)
 
