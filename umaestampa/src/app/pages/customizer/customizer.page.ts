@@ -66,6 +66,9 @@ export class CustomizerPage implements OnInit {
   // Produto atualmente sendo customizado
   product: Product | undefined;
 
+  // ID do design a ser editado (null se for novo design)
+  editingDesignId: string | null = null;
+
   // Imagem carregada pelo utilizador em formato Data URL
   uploadedImage: string | null = null;
 
@@ -117,6 +120,9 @@ constructor() {
       this.router.navigate(['/catalog']);
       return;
     }
+
+    // Verificar se estamos a editar um design existente
+    this.editingDesignId = this.route.snapshot.queryParamMap.get('editDesignId');
 
     this.restoreDraft();
   }
@@ -313,7 +319,9 @@ constructor() {
   }
 
   /**
-   * Guarda o design atual na biblioteca do utilizador
+   * Guarda o design atual na biblioteca do utilizador.
+   * Se estiver a editar um design existente (editingDesignId definido), atualiza-o.
+   * Caso contrário, cria um novo design.
    * @async
    * @returns {Promise<void>}
    */
@@ -332,15 +340,21 @@ constructor() {
     try {
       this.isLoading.set(true);
 
-      await this.designsService.saveDesign({
+      const designInput = {
         product: this.product,
         imageUrl: this.uploadedImage,
         imagePosition: this.imagePosition,
         imageScale: this.imageScale,
         imageRotation: this.imageRotation,
-      });
+      };
 
-      await this.toastService.success('Design guardado com sucesso!');
+      if (this.editingDesignId) {
+        await this.designsService.updateDesign(this.editingDesignId, designInput);
+        await this.toastService.success('Design atualizado com sucesso!');
+      } else {
+        await this.designsService.saveDesign(designInput);
+        await this.toastService.success('Design guardado com sucesso!');
+      }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
       await this.toastService.error(`Falha ao guardar design: ${errorMessage}`);
