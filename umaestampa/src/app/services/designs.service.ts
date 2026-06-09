@@ -90,6 +90,32 @@ export class DesignsService {
     await this.saveDesignsForCurrentUser();
   }
 
+  async updateDesign(designId: string, input: SaveDesignInput): Promise<void> {
+    const user = this.authService.user;
+    if (!user) {
+      console.warn('Utilizador não autenticado. Design não foi atualizado.');
+      return;
+    }
+
+    this._designs.update((current) =>
+      current.map((design) =>
+        design.id === designId
+          ? {
+              ...design,
+              product: input.product,
+              imageUrl: input.imageUrl,
+              imagePosition: input.imagePosition,
+              imageScale: input.imageScale,
+              imageRotation: input.imageRotation,
+              savedAt: new Date(),
+            }
+          : design,
+      ),
+    );
+
+    await this.saveDesignsForCurrentUser();
+  }
+
   async removeDesign(designId: string): Promise<void> {
     this._designs.update((current) => current.filter((design) => design.id !== designId));
     await this.saveDesignsForCurrentUser();
