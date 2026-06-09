@@ -55,7 +55,9 @@ export class SavedDesignsPage implements OnInit {
       imageRotation: design.imageRotation,
     });
 
-    this.router.navigate(['/customizer', design.product.id]);
+    this.router.navigate(['/customizer', design.product.id], {
+      queryParams: { editDesignId: design.id },
+    });
   }
 
   async addDesignToCart(design: SavedDesign): Promise<void> {
